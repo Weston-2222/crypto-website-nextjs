@@ -1,72 +1,47 @@
-import { DataTable } from '@/components/coinsMarketsTable';
+// app/page.tsx
+
+import { DataTable } from '@/components/coinsMarketsCapTable';
 import { CoinsMarketsApiResponse } from '@/types/api/coingecko/coinsMarkets';
 import React from 'react';
-import { ColumnDef } from '@tanstack/react-table';
 
-export const revalidate = 3600;
+export const revalidate = 3600; // 每小時重新生成靜態頁面（3600 秒）
 
-const getCoinsMarketsData = async () => {
-  const res = await fetch(
-    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd',
-    {
-      headers: {
-        'X-CMC_PRO_API_KEY': '3adfd9a8-73f6-4cd0-a604-e0ac66775d63',
-        accept: 'application/json',
-      },
+const Page = async () => {
+  try {
+    const res = await fetch(
+      `${process.env.COINGECKO_API_URL}/coins/markets?vs_currency=usd`,
+      {
+        headers: {
+          'X-CMC_PRO_API_KEY': process.env.COINGECKO_API_KEY || '',
+          accept: 'application/json',
+        },
+        next: { revalidate }, // 啟用 ISR
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(`HTTP 錯誤！狀態碼：${res.status}`);
     }
-  );
-  const data = await res.json();
 
-  return data.map((item: CoinsMarketsApiResponse) => ({
-    ...item,
-    nameAndSymbol: `${item.name} (${item.symbol})`,
-  }));
+    const data: CoinsMarketsApiResponse[] = await res.json();
+
+    const nameAndSymbol = data.map((item) => ({
+      ...item,
+      name_symbol: `${item.name}_${item.symbol}`,
+    }));
+
+    return (
+      <div className='container mx-auto py-10'>
+        <DataTable data={nameAndSymbol} />
+      </div>
+    );
+  } catch (error) {
+    return (
+      <div className='container mx-auto py-10'>
+        <p>無法獲取數據，請稍後重試。</p>
+      </div>
+    );
+  }
 };
 
-const page = async () => {
-  type Payment = {
-    id: string;
-    nameAndSymbol: string;
-    market_cap_rank: number;
-    market_cap: number;
-    current_price: number;
-    price_change_percentage_24h: number;
-    image: string;
-  };
-  const columns: ColumnDef<Payment>[] = [
-    {
-      accessorKey: 'market_cap_rank',
-      header: '市值排名',
-    },
-    {
-      accessorKey: 'image',
-      header: '',
-    },
-    {
-      accessorKey: 'nameAndSymbol',
-      header: '貨幣',
-    },
-
-    {
-      accessorKey: 'current_price',
-      header: '價格',
-    },
-    {
-      accessorKey: 'price_change_percentage_24h',
-      header: '24小時漲幅',
-    },
-    {
-      accessorKey: 'market_cap',
-      header: '市值',
-    },
-  ];
-  const data = await getCoinsMarketsData();
-
-  return (
-    <div className='container mx-auto py-10'>
-      <DataTable columns={columns} data={data} />
-    </div>
-  );
-};
-
-export default page;
+export default Page;
