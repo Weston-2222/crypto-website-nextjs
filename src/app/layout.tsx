@@ -12,6 +12,8 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import './globals.css';
+import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeToggle } from '@/components/themeToggle';
 export default function Layout({ children }: { children: React.ReactNode }) {
   const links = [
     {
@@ -45,52 +47,60 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   ];
   const [open, setOpen] = useState(false);
   return (
-    <html>
+    <html lang='zh-TW'>
       <body>
-        <div
-          className={cn(
-            'rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1  mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden',
-            'h-screen ' // for your use case, use `h-screen` instead of `h-[60vh]`
-          )}
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='system'
+          enableSystem
+          disableTransitionOnChange
         >
-          <Sidebar open={open} setOpen={setOpen} animate={false}>
-            <SidebarBody className='justify-between gap-10'>
-              <div className='flex flex-col flex-1 overflow-y-auto overflow-x-hidden'>
-                <>
-                  <Logo />
-                </>
-                <div className='mt-8 flex flex-col gap-2'>
-                  {links.map((link, idx) => (
-                    <SidebarLink key={idx} link={link} />
-                  ))}
+          <div
+            className={cn(
+              'rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1  mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden h-screen'
+            )}
+          >
+            <Sidebar open={open} setOpen={setOpen} animate={false}>
+              <SidebarBody className='justify-between gap-10'>
+                <div className='flex flex-col flex-1 overflow-y-auto overflow-x-hidden'>
+                  <>
+                    <Logo />
+                  </>
+                  <div className='mt-8 flex flex-col gap-2'>
+                    {links.map((link, idx) => (
+                      <SidebarLink key={idx} link={link} />
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <SidebarLink
-                  link={{
-                    label: 'Manu Arora',
-                    href: '#',
-                    icon: (
-                      <Image
-                        src='https://assets.aceternity.com/manu.png'
-                        className='h-7 w-7 flex-shrink-0 rounded-full'
-                        width={50}
-                        height={50}
-                        alt='Avatar'
-                      />
-                    ),
-                  }}
-                />
-              </div>
-            </SidebarBody>
-          </Sidebar>
-          <Dashboard>{children}</Dashboard>
-        </div>
+                <div>
+                  <SidebarLink
+                    link={{
+                      label: 'Manu Arora',
+                      href: '#',
+                      icon: (
+                        <Image
+                          src='https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png?1696501400'
+                          className='h-7 w-7 flex-shrink-0 rounded-full'
+                          width={50}
+                          height={50}
+                          alt='Avatar'
+                        />
+                      ),
+                    }}
+                  />
+                  <ThemeToggle />
+                </div>
+              </SidebarBody>
+            </Sidebar>
+
+            <Dashboard>{children}</Dashboard>
+          </div>{' '}
+        </ThemeProvider>
       </body>
     </html>
   );
 }
-export const Logo = () => {
+const Logo = () => {
   return (
     <Link
       href='#'
@@ -107,38 +117,38 @@ export const Logo = () => {
     </Link>
   );
 };
-export const LogoIcon = () => {
-  return (
-    <Link
-      href='#'
-      className='font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20'
-    >
-      <div className='h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0' />
-    </Link>
-  );
-};
+// const LogoIcon = () => {
+//   return (
+//     <Link
+//       href='#'
+//       className='font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20'
+//     >
+//       <div className='h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0' />
+//     </Link>
+//   );
+// };
 
 // Dummy dashboard component with content
 const Dashboard = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className='flex flex-1'>
-      <div className='p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full '>
-        <div className='flex gap-2'>
-          {[...new Array(4)].map((i) => (
+    <div className='flex flex-1 '>
+      <div className='overflow-y-auto p-2 md:p-5 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full '>
+        <div className='gap-2'>
+          {/* {[...new Array(4)].map((i) => (
             <div
               key={'first' + i}
               className='h-200 w-full rounded-lg  bg-gray-100 dark:bg-neutral-800 animate-pulse'
             ></div>
-          ))}
+          ))} */}
           {children}
         </div>
         <div className='flex gap-2 flex-1'>
-          {[...new Array(2)].map((i) => (
+          {/* {[...new Array(2)].map((i) => (
             <div
               key={'second' + i}
               className='h-full w-full rounded-lg  bg-gray-100 dark:bg-neutral-800 animate-pulse'
             ></div>
-          ))}
+          ))} */}
         </div>
       </div>
     </div>
