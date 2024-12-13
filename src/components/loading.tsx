@@ -1,9 +1,7 @@
-const Loading = () => {
-  return (
-    <div className='flex justify-center items-center h-full w-full'>
-      <div className='loading-spinner'></div>
-    </div>
-  );
+import { cn } from '@/lib/utils';
+
+const Loading = ({ className }: { className?: string }) => {
+  return <div className={cn('loading-spinner', className)}></div>;
 };
 
 export default Loading;
