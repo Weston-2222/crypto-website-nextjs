@@ -21,9 +21,15 @@ const CoinPriceTabs = ({
       onValueChange={(value) => setType(value as 'price' | 'market_caps')}
     >
       <TabsList>
-        <TabsTrigger value='price'>Prices</TabsTrigger>
-        <TabsTrigger value='market_caps'>Market Caps</TabsTrigger>
-        <TabsTrigger value='TradingView'>TradingView</TabsTrigger>
+        <TabsTrigger value='price' className='hover:text-primary'>
+          Prices
+        </TabsTrigger>
+        <TabsTrigger value='market_caps' className='hover:text-primary'>
+          Market Caps
+        </TabsTrigger>
+        <TabsTrigger value='TradingView' className='hover:text-primary'>
+          TradingView
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value='TradingView' className='h-full w-full'>
