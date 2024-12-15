@@ -112,7 +112,7 @@ export type Ticker = {
 };
 
 // 定義主要的 CoinDataApiResponse 類型
-export type CoinDataApiResponse = BasicInformation &
+export type CoinInfoApiResponse = BasicInformation &
   MarketData & {
     categories: string[]; //分類
     preview_listing: false;
