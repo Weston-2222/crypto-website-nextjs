@@ -23,7 +23,7 @@ import { CoinMarketChartApiResponse } from '@/types/api/coingecko/coinMarketChar
 import { Days } from '@/app/api/price_charts/[id]/[days]/route';
 
 import Loading from './loading';
-import { formatPrice } from '@/lib/utils';
+import { formatPriceUnit } from '@/lib/utils';
 
 const chartConfig = {
   price: {
@@ -104,24 +104,53 @@ const PricesCharts = ({
   useEffect(() => {
     changePeriod(period);
   }, []);
+  const daysList = [
+    {
+      value: '1_days',
+      label: '1 Day',
+    },
+    {
+      value: '7_days',
+      label: '7 Days',
+    },
+    {
+      value: '30_days',
+      label: '30 Days',
+    },
+    {
+      value: '90_days',
+      label: '90 Days',
+    },
+    {
+      value: '180_days',
+      label: '180 Days',
+    },
+    {
+      value: '365_days',
+      label: '365 Days',
+    },
+  ];
 
   return (
     <>
       <Tabs
-        defaultValue='1_days'
+        defaultValue={daysList[0].value}
         className='w-full h-full'
         onValueChange={changePeriod}
       >
         <TabsList>
-          <TabsTrigger value='1_days'>1 Day</TabsTrigger>
-          <TabsTrigger value='7_days'>7 Days</TabsTrigger>
-          <TabsTrigger value='30_days'>30 Days</TabsTrigger>
-          <TabsTrigger value='90_days'>90 Days</TabsTrigger>
-          <TabsTrigger value='180_days'>180 Days</TabsTrigger>
-          <TabsTrigger value='365_days'>365 Days</TabsTrigger>
+          {daysList.map((day) => (
+            <TabsTrigger
+              key={day.value}
+              value={day.value}
+              className='hover:text-primary'
+            >
+              {day.label}
+            </TabsTrigger>
+          ))}
         </TabsList>
 
-        <Card>
+        <Card className='border-none'>
           <CardHeader>
             <div className='flex justify-start items-center gap-2'>
               <CardTitle>Line Chart - Linear</CardTitle>
@@ -157,7 +186,7 @@ const PricesCharts = ({
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
-                  tickFormatter={formatPrice}
+                  tickFormatter={(value) => formatPriceUnit(value)}
                 />
                 <ChartTooltip cursor={true} content={<ChartTooltipContent />} />
                 <Line
