@@ -17,7 +17,7 @@ const CoinPriceTabs = ({
   return (
     <Tabs
       defaultValue='prices'
-      className='w-full h-full'
+      className='w-full'
       onValueChange={(value) => setType(value as 'price' | 'market_caps')}
     >
       <TabsList>
