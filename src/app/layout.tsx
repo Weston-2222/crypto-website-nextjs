@@ -1,12 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { Sidebar, SidebarBody, SidebarLink } from '@/components/ui/sidebar';
-import {
-  IconArrowLeft,
-  IconBrandTabler,
-  IconSettings,
-  IconUserBolt,
-} from '@tabler/icons-react';
+import { IconBrandTabler, IconUserBolt } from '@tabler/icons-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
@@ -17,44 +12,27 @@ import { ThemeToggle } from '@/components/themeToggle';
 export default function Layout({ children }: { children: React.ReactNode }) {
   const links = [
     {
-      label: 'Dashboard',
-      href: '#',
+      label: '市值排行',
+      href: '/',
       icon: (
         <IconBrandTabler className='text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0' />
       ),
     },
     {
-      label: 'Profile',
-      href: '#',
+      label: '分類',
+      href: '/category',
       icon: (
         <IconUserBolt className='text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0' />
-      ),
-    },
-    {
-      label: 'Settings',
-      href: '#',
-      icon: (
-        <IconSettings className='text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0' />
-      ),
-    },
-    {
-      label: 'Logout',
-      href: '#',
-      icon: (
-        <IconArrowLeft className='text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0' />
       ),
     },
   ];
   const [open, setOpen] = useState(false);
   return (
-    <html lang='zh-TW'>
+    <html lang='zh-TW' className='dark'>
       <body>
-        <ThemeProvider
-          attribute='class'
-          defaultTheme='system'
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider attribute='class' defaultTheme='dark'>
+          {/* // enableSystem
+          // disableTransitionOnChange */}
           <div
             className={cn(
               'rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1  mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden h-screen'
