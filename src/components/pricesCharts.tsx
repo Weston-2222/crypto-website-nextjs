@@ -20,11 +20,17 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import { CoinMarketChartApiResponse } from '@/types/api/coingecko/coinMarketChart';
-import { Days } from '@/app/api/price_charts/[id]/[days]/route';
 
 import Loading from './loading';
 import { formatPriceUnit } from '@/lib/utils';
-
+enum Days {
+  '1_days' = 1,
+  '7_days' = 7,
+  '30_days' = 30,
+  '90_days' = 90,
+  '180_days' = 180,
+  '365_days' = 365,
+}
 const chartConfig = {
   price: {
     label: '價格',
@@ -103,7 +109,7 @@ const PricesCharts = ({
 
   useEffect(() => {
     changePeriod(period);
-  }, []);
+  });
   const daysList = [
     {
       value: '1_days',
