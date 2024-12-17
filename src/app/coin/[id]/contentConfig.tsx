@@ -11,6 +11,7 @@ import {
   MyDropDownMenu,
   MyDropDownTitle,
 } from '@/components/myDropDownMenu';
+import { fetchCoinCategoryList } from '@/services/coin/coinGecko';
 
 export const getMerketInfoConfig = (
   coinMarketData: CoinsMarketsApiResponse
@@ -189,6 +190,18 @@ export const getLinkInfoConfig = (
             </MyDropDownMenu>
           ) : null,
       },
+      // {
+      //   label: '分類',
+      //   tooltip: null,
+      //   value:
+      //     coinData.categories.length > 0 ? (
+      //       <div className='flex flex-wrap gap-2'>
+      //         {coinData.categories.map((category) => (
+      //           <MyHoverCardButton key={category}>{category}</MyHoverCardButton>
+      //         ))}
+      //       </div>
+      //     ) : null,
+      // },
       {
         label: '社群',
         tooltip: null,
@@ -204,10 +217,43 @@ export const getLinkInfoConfig = (
       {
         label: 'X追蹤人數',
         tooltip: null,
-        value: formatPriceUnit(
-          coinData.community_data.twitter_followers,
-          false
-        ),
+        value: coinData.community_data.twitter_followers
+          ? formatPriceUnit(coinData.community_data.twitter_followers, false)
+          : null,
+      },
+    ],
+  };
+};
+export const getCategoryInfoConfig = async (
+  coinData: CoinInfoApiResponse
+): Promise<InfoCardConfig> => {
+  const categoryList = await fetchCoinCategoryList();
+  const categories: { name: string; id: string | undefined }[] =
+    coinData.categories.map((item) => ({
+      name: item,
+      id: categoryList.find((category) => category.name === item)?.category_id,
+    }));
+
+  return {
+    title: '分類',
+    description: '提供最新的分類資訊',
+    content: [
+      {
+        label: '',
+        tooltip: null,
+        value:
+          coinData.categories.length > 0 ? (
+            <div className='flex flex-wrap gap-2'>
+              {categories.map((category) => (
+                <MyHoverCardButton
+                  key={category.id}
+                  openPage={`/category/${category.id}`}
+                >
+                  {category.name}
+                </MyHoverCardButton>
+              ))}
+            </div>
+          ) : null,
       },
     ],
   };
