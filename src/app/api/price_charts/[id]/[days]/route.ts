@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-export enum Days {
+enum Days {
   '1_days' = 1,
   '7_days' = 7,
   '30_days' = 30,
@@ -7,11 +7,10 @@ export enum Days {
   '180_days' = 180,
   '365_days' = 365,
 }
-export const GET = async (
-  request: Request,
-  { params }: { params: { id: string; days: string } }
-) => {
-  const { id, days } = await params;
+export const GET = async (request: Request) => {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+  const days = searchParams.get('days');
 
   if (!id || !days) {
     return NextResponse.json(
@@ -53,7 +52,7 @@ export const GET = async (
         'Cache-Control': 'max-age=60',
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { message: 'Internal Server Error' },
       { status: 500 }
