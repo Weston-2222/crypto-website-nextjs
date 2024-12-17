@@ -1,8 +1,8 @@
-// app/page.tsx
+import 'server-only';
 
-import { DataTable } from '@/components/coinsMarketsCapTable';
 import { CoinsMarketsApiResponse } from '@/types/api/coingecko/coinsMarkets';
 import React from 'react';
+import CoinMasketsCapTable from '../components/coinMasketsCapTable';
 
 export const revalidate = 3600; // 每小時重新生成靜態頁面（3600 秒）
 
@@ -31,11 +31,12 @@ const Page = async () => {
     }));
 
     return (
-      <div className='container mx-auto py-10'>
-        <DataTable data={nameAndSymbol} />
+      <div className='container mx-auto p-10'>
+        <h1 className='text-3xl p-5'>市值排名</h1>
+        <CoinMasketsCapTable data={nameAndSymbol} />
       </div>
     );
-  } catch (error) {
+  } catch {
     return (
       <div className='container mx-auto py-10'>
         <p>無法獲取數據，請稍後重試。</p>
