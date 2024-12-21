@@ -1,6 +1,6 @@
 'use client';
 import 'client-only';
-import { IconLogin, IconLogout } from '@tabler/icons-react';
+import { IconLogin } from '@tabler/icons-react';
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from './ui/dialog';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { useForm } from 'react-hook-form';
@@ -27,8 +27,6 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 const LoginDialog = ({ defaultOpen = false }: { defaultOpen?: boolean }) => {
-  const { status } = useSession();
-
   const FormSchema = z.object({
     email: z.string().email({
       message: 'Invalid email address.',
@@ -48,94 +46,94 @@ const LoginDialog = ({ defaultOpen = false }: { defaultOpen?: boolean }) => {
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     const { email, password } = data;
-    await signIn('credentials', { email, password, callbackUrl: '/' });
+    const result = await signIn('credentials', {
+      redirect: false,
+      email,
+      password,
+      callbackUrl: '/',
+    });
+
+    if (result?.error) {
+      alert('登入失敗，請檢查您的電子郵件和密碼。');
+    }
   };
   const [open, setOpen] = useState(defaultOpen);
-  if (status == 'authenticated') {
-    return (
-      <button onClick={() => signOut()} className='flex items-center gap-2'>
-        <IconLogout />
-        登出
-      </button>
-    );
-  }
-  if (status == 'unauthenticated') {
-    return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger>
-          <div className='flex items-center gap-2'>
-            <IconLogin />
-            登入
-          </div>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>登入</DialogTitle>
-            <DialogDescription></DialogDescription>
-          </DialogHeader>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className='w-2/3 space-y-6'
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger>
+        <div className='flex items-center gap-2'>
+          <IconLogin />
+          登入
+        </div>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>登入</DialogTitle>
+          <DialogDescription></DialogDescription>
+        </DialogHeader>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className='w-2/3 space-y-6'
+          >
+            <FormField
+              control={form.control}
+              name='email'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder='example@gmail.com' {...field} />
+                  </FormControl>
+                  {/* <FormDescription>
+                      This is your public display name.
+                    </FormDescription> */}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='password'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type='password' placeholder='********' {...field} />
+                  </FormControl>
+                  {/* <FormDescription>
+                      This is your public display name.
+                    </FormDescription> */}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type='submit'>Submit</Button>
+          </form>
+        </Form>
+        <div className='flex justify-end gap-2'>
+          <Button variant='link' asChild>
+            <Link
+              href='/user/register'
+              prefetch={false}
+              onClick={() => setOpen(false)}
             >
-              <FormField
-                control={form.control}
-                name='email'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder='example@gmail.com' {...field} />
-                    </FormControl>
-                    {/* <FormDescription>
-                      This is your public display name.
-                    </FormDescription> */}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='password'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input placeholder='********' {...field} />
-                    </FormControl>
-                    {/* <FormDescription>
-                      This is your public display name.
-                    </FormDescription> */}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type='submit'>Submit</Button>
-            </form>
-          </Form>
-          <div className='flex justify-end gap-2'>
-            <Button variant='link' asChild>
-              <Link
-                href='/user/register'
-                prefetch={false}
-                onClick={() => setOpen(false)}
-              >
-                註冊
-              </Link>
-            </Button>
-            <Button variant='link' asChild>
-              <Link
-                href='/forgot-password'
-                prefetch={false}
-                onClick={() => setOpen(false)}
-              >
-                忘記密碼
-              </Link>
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    );
-  }
+              註冊
+            </Link>
+          </Button>
+          <Button variant='link' asChild>
+            <Link
+              href='/forgot-password'
+              prefetch={false}
+              onClick={() => setOpen(false)}
+            >
+              忘記密碼
+            </Link>
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
 };
 export default LoginDialog;
