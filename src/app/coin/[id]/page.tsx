@@ -8,14 +8,12 @@ import LinkInfo from './components/linkInfo';
 import DeveloperInfo from './components/developerInfo';
 import CategoryInfo from './components/categoryInfo';
 import PriceChart from './components/priceChart';
-import MyFavoriteCoinButton from '@/components/myFavoriteCoinButton';
 
 const CoinPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
 
   return (
     <>
-      <MyFavoriteCoinButton coin_id={id} />
       <div className='w-full'>
         <div>
           <Suspense fallback={<Loading loadingSize='w-20 h-20' />}>

@@ -8,13 +8,20 @@ import {
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { IconStar, IconStarFilled } from '@tabler/icons-react';
+import { cn } from '@/lib/utils';
 
 const fetchFavoriteCoins = async () => {
   const res = await fetch('/api/favorites/coins');
   const data = await res.json();
   return data;
 };
-const MyFavoriteCoinButton = ({ coin_id }: { coin_id: string }) => {
+const MyFavoriteCoinButton = ({
+  coin_id,
+  className,
+}: {
+  coin_id: string;
+  className?: string;
+}) => {
   const session = useSession();
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -49,14 +56,17 @@ const MyFavoriteCoinButton = ({ coin_id }: { coin_id: string }) => {
 
   if (isFavorite) {
     return (
-      <div onClick={() => onClick({ method: 'DELETE' })}>
-        <IconStarFilled />
+      <div
+        onClick={() => onClick({ method: 'DELETE' })}
+        className={cn(className)}
+      >
+        <IconStarFilled className='cursor-pointer w-10 h-10' />
       </div>
     );
   }
   return (
-    <div onClick={() => onClick({ method: 'POST' })}>
-      <IconStar />
+    <div onClick={() => onClick({ method: 'POST' })} className={className}>
+      <IconStar className='cursor-pointer w-10 h-10' />
     </div>
   );
 };

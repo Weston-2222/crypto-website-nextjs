@@ -5,6 +5,7 @@ import {
   IconArrowBadgeDownFilled,
 } from '@tabler/icons-react';
 import { formatNumberWithCommas } from '@/lib/utils';
+import MyFavoriteCoinButton from './myFavoriteCoinButton';
 
 export const revalidate = 3600;
 
@@ -38,6 +39,7 @@ const coinTitle = async ({ id }: { id: string }) => {
         {/* Name and Symbol */}
         <h1 className='text-4xl font-bold'>{data.name}</h1>
         <p className='text-xl text-gray-500'>{data.symbol}</p>
+        <MyFavoriteCoinButton coin_id={id} />
       </div>
       {/* 第二行 */}
       <div className='flex items-center gap-2 m-2'>
