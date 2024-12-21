@@ -9,7 +9,7 @@ enum Days {
 }
 export const GET = async (request: Request) => {
   const { searchParams } = new URL(request.url);
-  const id = searchParams.get('id');
+  const id = searchParams.get('coinId');
   const days = searchParams.get('days');
 
   if (!id || !days) {
