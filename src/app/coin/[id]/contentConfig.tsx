@@ -11,7 +11,7 @@ import {
   MyDropDownMenu,
   MyDropDownTitle,
 } from '@/components/myDropDownMenu';
-import { fetchCoinCategoryList } from '@/services/coin/coinGecko';
+import { getCoinCategoryList } from '@/services/coinGecko/categoriesList';
 
 export const getMerketInfoConfig = (
   coinMarketData: CoinsMarketsApiResponse
@@ -190,18 +190,6 @@ export const getLinkInfoConfig = (
             </MyDropDownMenu>
           ) : null,
       },
-      // {
-      //   label: '分類',
-      //   tooltip: null,
-      //   value:
-      //     coinData.categories.length > 0 ? (
-      //       <div className='flex flex-wrap gap-2'>
-      //         {coinData.categories.map((category) => (
-      //           <MyHoverCardButton key={category}>{category}</MyHoverCardButton>
-      //         ))}
-      //       </div>
-      //     ) : null,
-      // },
       {
         label: '社群',
         tooltip: null,
@@ -227,7 +215,7 @@ export const getLinkInfoConfig = (
 export const getCategoryInfoConfig = async (
   coinData: CoinInfoApiResponse
 ): Promise<InfoCardConfig> => {
-  const categoryList = await fetchCoinCategoryList();
+  const categoryList = await getCoinCategoryList();
   const categories: { name: string; id: string | undefined }[] =
     coinData.categories.map((item) => ({
       name: item,
