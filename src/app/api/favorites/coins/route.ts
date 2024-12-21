@@ -20,7 +20,7 @@ export const GET = async (req: NextRequest) => {
 
   try {
     // 取得user
-    const user = await User.findOne({ _id: token.id });
+    const user = await User.findById(token.sub);
     // 如果user不存在，回傳404
     if (!user) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
@@ -60,7 +60,7 @@ export const POST = async (req: NextRequest) => {
 
   try {
     // 取得user
-    const user = await User.findOne({ _id: token.id }).session(session);
+    const user = await User.findOne({ _id: token.sub }).session(session);
     // 如果user不存在，回傳404
     if (!user) {
       await session.abortTransaction();
@@ -120,7 +120,7 @@ export const DELETE = async (req: NextRequest) => {
 
   try {
     // 取得user
-    const user = await User.findOne({ _id: token.id }).session(session);
+    const user = await User.findOne({ _id: token.sub }).session(session);
     // 如果user不存在，回傳404
     if (!user) {
       await session.abortTransaction();
