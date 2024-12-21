@@ -1,13 +1,17 @@
 import 'server-only';
-import { fetchCoinData } from '@/services/coin/coinGecko';
+import { getCoinBasicData } from '@/services/coinGecko/coinBasic';
 import { CoinInfoApiResponse } from '@/types/api/coingecko/coinInfo';
 
 import CoinPriceTabs from './coinPriceTabs';
 
 const PriceChart = async ({ id }: { id: string }) => {
-  const coinData: CoinInfoApiResponse = await fetchCoinData(id);
+  try {
+    const coinData: CoinInfoApiResponse = await getCoinBasicData(id);
 
-  return <CoinPriceTabs coinId={id} symbol={coinData.symbol} />;
+    return <CoinPriceTabs coinId={id} symbol={coinData.symbol} />;
+  } catch {
+    return <p>無法取得價格資料</p>;
+  }
 };
 
 export default PriceChart;
