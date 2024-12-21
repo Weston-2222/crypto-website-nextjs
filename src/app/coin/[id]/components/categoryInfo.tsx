@@ -1,16 +1,21 @@
 import 'server-only';
 import InfoCard, { InfoCardConfig } from '@/components/infoCard';
-import { fetchCoinData } from '@/services/coin/coinGecko';
+import { getCoinBasicData } from '@/services/coinGecko/coinBasic';
 import { CoinInfoApiResponse } from '@/types/api/coingecko/coinInfo';
 import { getCategoryInfoConfig } from '../contentConfig';
 
 const CategoryInfo = async ({ id }: { id: string }) => {
-  const coinData: CoinInfoApiResponse = await fetchCoinData(id);
-  const categoryInfoConfig: InfoCardConfig = await getCategoryInfoConfig(
-    coinData
-  );
+  try {
+    const coinData: CoinInfoApiResponse = await getCoinBasicData(id);
 
-  return <InfoCard config={categoryInfoConfig} />;
+    const categoryInfoConfig: InfoCardConfig = await getCategoryInfoConfig(
+      coinData
+    );
+
+    return <InfoCard config={categoryInfoConfig} />;
+  } catch {
+    return <p>無法取得分類資料</p>;
+  }
 };
 
 export default CategoryInfo;
