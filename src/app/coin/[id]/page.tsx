@@ -8,12 +8,14 @@ import LinkInfo from './components/linkInfo';
 import DeveloperInfo from './components/developerInfo';
 import CategoryInfo from './components/categoryInfo';
 import PriceChart from './components/priceChart';
+import MyFavoriteCoinButton from '@/components/myFavoriteCoinButton';
 
 const CoinPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
 
   return (
     <>
+      <MyFavoriteCoinButton coin_id={id} />
       <div className='w-full'>
         <div>
           <Suspense fallback={<Loading loadingSize='w-20 h-20' />}>
@@ -23,7 +25,6 @@ const CoinPage = async ({ params }: { params: Promise<{ id: string }> }) => {
           </Suspense>
         </div>
       </div>
-
       <div className='flex flex-col xl:flex-row lg:space-x-4 space-y-4 xl:space-y-0 gap-4'>
         {/* 在中小螢幕時 CoinPriceTabs 在上面，正常電腦螢幕時 CoinPriceTabs 在右邊 */}
         <div className='xl:order-2 w-full xl:w-2/3'>
