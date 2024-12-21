@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Tabs, TabsList, TabsTrigger } from './ui/tabs';
 
 import { TrendingUp } from 'lucide-react';
@@ -56,7 +56,7 @@ type PricesChartsType = {
   volumes: number;
   market_caps: number;
 };
-const PricesCharts = ({
+const MyPricesCharts = ({
   coinId,
   type,
 }: {
@@ -74,42 +74,43 @@ const PricesCharts = ({
   const [isLoading, setIsLoading] = useState(false);
 
   //api
-  const getCoinPricesChartData = async (
-    value: string
-  ): Promise<PricesChartsType[]> => {
-    const data = await fetch(`/api/price_charts/${coinId}/${value}`, {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-      },
-    });
-    const coinPricesChartData: CoinMarketChartApiResponse = await data.json();
-    return coinPricesChartData.prices.map((price, index) => ({
-      // time: new Date(price[0]).toLocaleDateString(),
-      price: price[1],
-      time: `${new Date(price[0]).toLocaleDateString()} ${new Date(
-        price[0]
-      ).toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      })}`,
-      volumes: coinPricesChartData.total_volumes[index][1],
-      market_caps: coinPricesChartData.market_caps[index][1],
-    }));
-  };
+  const getCoinPricesChartData = useCallback(
+    async (value: string): Promise<PricesChartsType[]> => {
+      const url = new URL('/api/price_charts', window.location.origin);
+      url.searchParams.append('coinId', coinId);
+      url.searchParams.append('days', value);
 
-  const changePeriod = async (value: string) => {
-    if (!(value in Days)) return;
-    setIsLoading(true);
-    const pricesCharts = await getCoinPricesChartData(value);
-    setPeriod(value);
-    setCoinPricesChartData(pricesCharts);
-    setIsLoading(false);
-  };
+      const data = await fetch(url.toString(), {
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+        },
+      });
+      const coinPricesChartData: CoinMarketChartApiResponse = await data.json();
+      return coinPricesChartData.prices.map((price, index) => ({
+        price: price[1],
+        time: `${new Date(price[0]).toLocaleDateString()} ${new Date(
+          price[0]
+        ).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        })}`,
+        volumes: coinPricesChartData.total_volumes[index][1],
+        market_caps: coinPricesChartData.market_caps[index][1],
+      }));
+    },
+    [coinId]
+  );
 
   useEffect(() => {
-    changePeriod(period);
-  });
+    if (period in Days) {
+      setIsLoading(true);
+      getCoinPricesChartData(period).then((pricesCharts) => {
+        setCoinPricesChartData(pricesCharts);
+        setIsLoading(false);
+      });
+    }
+  }, [period, getCoinPricesChartData]);
   const daysList = [
     {
       value: '1_days',
@@ -142,7 +143,7 @@ const PricesCharts = ({
       <Tabs
         defaultValue={daysList[0].value}
         className='w-full h-full'
-        onValueChange={changePeriod}
+        onValueChange={(value) => setPeriod(value)}
       >
         <TabsList>
           {daysList.map((day) => (
@@ -218,4 +219,4 @@ const PricesCharts = ({
     </>
   );
 };
-export default PricesCharts;
+export default MyPricesCharts;
