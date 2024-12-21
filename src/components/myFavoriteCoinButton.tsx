@@ -1,6 +1,6 @@
 'use client';
 import 'client-only';
-import { Button } from './ui/button';
+
 import {
   FavoriteRequest,
   FavoriteResponse,
@@ -9,15 +9,21 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { IconStar, IconStarFilled } from '@tabler/icons-react';
 
+const fetchFavoriteCoins = async () => {
+  const res = await fetch('/api/favorites/coins');
+  const data = await res.json();
+  return data;
+};
 const MyFavoriteCoinButton = ({ coin_id }: { coin_id: string }) => {
   const session = useSession();
   const [isFavorite, setIsFavorite] = useState(false);
+
   useEffect(() => {
-    setIsFavorite(
-      session.data?.user.favorites.coins.some(
-        (coin) => coin.coin_id === coin_id
-      )
-    );
+    fetchFavoriteCoins().then((data: FavoriteResponse) => {
+      if (data.coins) {
+        setIsFavorite(data.coins.some((coin) => coin.coin_id === coin_id));
+      }
+    });
   }, [session, coin_id]);
 
   const onClick = ({ method }: { method: 'POST' | 'DELETE' }) => {
@@ -33,16 +39,12 @@ const MyFavoriteCoinButton = ({ coin_id }: { coin_id: string }) => {
       },
       method,
       body: JSON.stringify(body),
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          setIsFavorite(!isFavorite);
-        }
-        return res.json();
-      })
-      .then((data: FavoriteResponse) => {
-        console.log(data);
-      });
+    }).then((res) => {
+      if (res.status === 200) {
+        setIsFavorite(!isFavorite);
+      }
+      return res.json();
+    });
   };
 
   if (isFavorite) {
