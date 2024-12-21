@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import 'server-only';
-import ReloadButton from './reloadButton';
+import Reload from './reload';
 
 import { connectToDB } from '@/lib/mongodb';
 import User from '@/models/user';
@@ -38,7 +38,7 @@ const FavoriteCoins = async () => {
         <CardDescription>收藏的幣種</CardDescription>
       </CardHeader>
       <CardContent>
-        <ReloadButton />
+        <Reload />
         {data ? <CoinMasketsCapTable data={data} /> : <p>沒有收藏任何幣種</p>}
       </CardContent>
       {/* <CardFooter>
