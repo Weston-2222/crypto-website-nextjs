@@ -11,7 +11,7 @@ export const connectToDB = async (): Promise<void> => {
 
   try {
     await mongoose.connect(MONGODB_URI, {
-      dbName: 'nextauth', // 指定資料庫名稱
+      dbName: 'crypto_website_ssr', // 指定資料庫名稱
     });
     console.log('成功連接 MongoDB');
   } catch (error) {
