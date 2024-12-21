@@ -3,7 +3,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TradingViewWidget from '@/dynamic/dynamicTradingViewWidget';
 
-import PricesCharts from '@/components/pricesCharts';
+import MyPricesCharts from '@/components/myPricesCharts';
 import { useState } from 'react';
 
 const CoinPriceTabs = ({
@@ -37,7 +37,7 @@ const CoinPriceTabs = ({
       </TabsContent>
 
       {/* <TabsContent value={type} className='h-full w-full'> */}
-      <PricesCharts coinId={coinId} type={type} />
+      <MyPricesCharts coinId={coinId} type={type} />
       {/* </TabsContent> */}
       {/* 
       <TabsContent value='market_caps' className='h-full w-full'>
