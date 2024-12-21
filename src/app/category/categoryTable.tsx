@@ -3,7 +3,7 @@ import 'client-only';
 import { CellContext } from '@tanstack/react-table';
 import { CoinCategoriesApiResponse } from '@/types/api/coingecko/coinCategories';
 import { ColumnDef } from '@tanstack/react-table';
-import MyTable from '@/components/mytable';
+import MyTable from '@/components/myTable';
 import Image from 'next/image';
 import MyPercent from '@/components/myPercent';
 import { useRouter } from 'next/navigation';

@@ -1,9 +1,13 @@
-import { fetchCoinCategoriesData } from '@/services/coin/coinGecko';
+import { getCoinCategoriesData } from '@/services/coinGecko/coinCategories';
 import CategoryTable from './categoryTable';
 
 const page = async () => {
-  const data = await fetchCoinCategoriesData();
-  return <CategoryTable data={data} />;
+  try {
+    const data = await getCoinCategoriesData();
+    return <CategoryTable data={data} />;
+  } catch {
+    return <p>無法取得類別資料</p>;
+  }
 };
 
 export default page;
