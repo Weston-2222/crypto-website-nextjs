@@ -14,7 +14,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-
 type MyDataTableProps<T> = {
   data: T[]; // 泛型數據
   columns: ColumnDef<T>[]; // 列定義
