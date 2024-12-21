@@ -19,20 +19,28 @@ const MyDropDownMenu = ({ children }: { children: ReactNode }) => {
   return (
     <div className='flex'>
       {title}
+
       <DropdownMenu modal={false} onOpenChange={(isOpen) => setIsOpen(isOpen)}>
-        <DropdownMenuTrigger className='flex items-center gap-2'>
-          <div className='p-1 px-4 bg-gray-800 text-white rounded-r-md hover:bg-gray-100 hover:text-black transition duration-200'>
-            {isOpen ? <IconChevronUp /> : <IconChevronDown />}
-          </div>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent> {list.map((item) => item)}</DropdownMenuContent>
+        {list.length > 0 && (
+          <>
+            <DropdownMenuTrigger className='flex items-center gap-2'>
+              <div className='p-1 px-4 bg-gray-800 text-white rounded-r-md hover:bg-gray-100 hover:text-black transition duration-200'>
+                {isOpen ? <IconChevronUp /> : <IconChevronDown />}
+              </div>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent>
+              {list.map((item) => item)}
+            </DropdownMenuContent>
+          </>
+        )}
       </DropdownMenu>
     </div>
   );
 };
 const MyDropDownTitle = ({ children }: { children: ReactNode }) => {
   return (
-    <span className='p-1 px-4 bg-gray-800 text-white rounded-l-md hover:bg-gray-100 hover:text-black transition duration-200'>
+    <span className='p-1 px-4 bg-gray-800 text-white rounded hover:bg-gray-100 hover:text-black transition duration-200'>
       {children}
     </span>
   );

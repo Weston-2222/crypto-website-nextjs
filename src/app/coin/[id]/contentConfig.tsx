@@ -112,15 +112,16 @@ export const getLinkInfoConfig = (
                 </p>
               }
             </MyDropDownTitle>
-            {contractAddress.slice(1).map(([platform, details]) => {
-              return (
-                <MyDropDownList key={details.contract_address}>
-                  {platform +
-                    '\n' +
-                    hideContractAddress(details.contract_address)}
-                </MyDropDownList>
-              );
-            })}
+            {contractAddress.length > 1 &&
+              contractAddress.slice(1).map(([platform, details]) => {
+                return (
+                  <MyDropDownList key={details.contract_address}>
+                    {platform +
+                      '\n' +
+                      hideContractAddress(details.contract_address)}
+                  </MyDropDownList>
+                );
+              })}
           </MyDropDownMenu>
         ),
       },
