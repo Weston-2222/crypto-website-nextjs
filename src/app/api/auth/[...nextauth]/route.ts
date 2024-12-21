@@ -23,12 +23,12 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.email = user.email;
-      }
-      return token;
+    async session({ session, token }) {
+      // 添加用戶角色到會話對象
+      session.user._id = token.sub as string;
+      session.user.email = token.email as string;
+
+      return session;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
