@@ -8,8 +8,9 @@ import {
   IconArrowBadgeUpFilled,
   IconArrowBadgeDownFilled,
 } from '@tabler/icons-react';
-import MyTable from '@/components/mytable';
+import MyTable from '@/components/myTable';
 import { useRouter } from 'next/navigation';
+
 export const CoinMasketsCapTable = ({
   data,
 }: {
@@ -31,6 +32,12 @@ export const CoinMasketsCapTable = ({
       </p>
     );
   }
+  const newData = data.map((item) => {
+    return {
+      ...item,
+      name_symbol: `${item.name}_${item.symbol}`,
+    };
+  });
 
   const getCoinMasketsCapTableConfig =
     (): ColumnDef<CoinsMarketsApiResponse>[] => [
@@ -104,7 +111,7 @@ export const CoinMasketsCapTable = ({
   const router = useRouter(); // 使用 useRouter hook
   return (
     <MyTable
-      data={data}
+      data={newData}
       columns={getCoinMasketsCapTableConfig()}
       onRowClick={(info) => {
         router.push(`/coin/${info.id}`);
