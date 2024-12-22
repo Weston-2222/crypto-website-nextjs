@@ -42,7 +42,8 @@ const MyTable = <T,>({
               {headerGroup.headers.map((header, index) => {
                 let className = '';
                 if (index === 0) {
-                  className = 'sticky left-0 z-10 p-0 lg:px-4';
+                  className =
+                    'sticky left-0 z-10 p-0 lg:px-4 dark:bg-black bg-white';
                 }
 
                 return (
