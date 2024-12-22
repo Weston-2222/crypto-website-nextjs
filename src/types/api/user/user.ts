@@ -1,3 +1,5 @@
+import { coin } from '@/models/user';
+
 export type GetUserResponse = {
   _id: string;
   email: string;

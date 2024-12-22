@@ -35,7 +35,7 @@ export const GET = async (req: NextRequest) => {
     return NextResponse.json(res);
   } catch (error) {
     return NextResponse.json(
-      { message: 'Transaction failed', error: error.message },
+      { message: 'Transaction failed', error: (error as Error).message },
       { status: 500 }
     );
   }
@@ -95,7 +95,7 @@ export const POST = async (req: NextRequest) => {
     await session.abortTransaction();
     session.endSession();
     return NextResponse.json(
-      { message: 'Transaction failed', error: error.message },
+      { message: 'Transaction failed', error: (error as Error).message },
       { status: 500 }
     );
   }
@@ -145,7 +145,7 @@ export const DELETE = async (req: NextRequest) => {
     await session.abortTransaction();
     session.endSession();
     return NextResponse.json(
-      { message: 'Transaction failed', error: error.message },
+      { message: 'Transaction failed', error: (error as Error).message },
       { status: 500 }
     );
   }

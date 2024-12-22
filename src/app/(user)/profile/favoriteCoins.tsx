@@ -11,7 +11,7 @@ import Reload from './reload';
 import { connectToDB } from '@/lib/mongodb';
 import User from '@/models/user';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions';
 import { getCoinMarketsData } from '@/services/coinGecko/coinMarkets';
 import CoinMasketsCapTable from '@/components/coinMasketsCapTable';
 import { CoinsMarketsApiResponse } from '@/types/api/coingecko/coinsMarkets';
