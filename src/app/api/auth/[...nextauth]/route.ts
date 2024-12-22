@@ -1,38 +1,6 @@
-import NextAuth, { NextAuthOptions } from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
+import NextAuth from 'next-auth';
+import { authOptions } from './authOptions';
 
-import { authorize } from './authorize';
-
-export const authOptions: NextAuthOptions = {
-  providers: [
-    CredentialsProvider({
-      name: 'Credentials',
-      credentials: {
-        email: {
-          label: 'Email',
-          type: 'text',
-          placeholder: 'email@example.com',
-        },
-        password: { label: 'Password', type: 'password' },
-      },
-      authorize: authorize,
-    }),
-  ],
-
-  session: {
-    strategy: 'jwt',
-  },
-  callbacks: {
-    async session({ session, token }) {
-      // 添加用戶角色到會話對象
-      session.user._id = token.sub as string;
-      session.user.email = token.email as string;
-
-      return session;
-    },
-  },
-  secret: process.env.NEXTAUTH_SECRET,
-};
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
