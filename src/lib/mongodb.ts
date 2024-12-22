@@ -5,7 +5,6 @@ const MONGODB_URI = process.env.MONGODB_URI || '';
 if (!MONGODB_URI) {
   throw new Error('請設定 MONGODB_URI 環境變數');
 }
-
 export const connectToDB = async (): Promise<void> => {
   if (mongoose.connection.readyState >= 1) return;
 
