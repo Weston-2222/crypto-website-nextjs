@@ -7,7 +7,13 @@ export async function POST(req: Request) {
 
   // 驗證輸入
   if (!email || !password) {
-    return Response.json({ message: 'Email 和 Password 是必需的' });
+    return Response.json(
+      { message: 'Email 和 Password 是必需的' },
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 
   try {

@@ -4,7 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-// import { toast } from '@/components/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -17,6 +16,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 const FormSchema = z.object({
   email: z.string().email({
@@ -30,7 +31,33 @@ const FormSchema = z.object({
   }),
 });
 
-export default function InputForm() {
+const Page = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const httpStatusToMessage = (status: number): void => {
+    switch (status) {
+      case 201:
+        toast({
+          title: '註冊成功',
+          description: '請登入',
+        });
+        break;
+      case 400:
+        toast({
+          title: '註冊失敗',
+          description: 'Email 或 Password 格式錯誤，請重新註冊',
+        });
+        break;
+      case 409:
+        toast({
+          title: '註冊失敗',
+          description: '該 Email 已被註冊',
+        });
+        break;
+    }
+  };
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -42,6 +69,7 @@ export default function InputForm() {
 
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    //兩次密碼是否相同
     if (data.password !== data.confirmPassword) {
       setIsPasswordMatch(false);
     } else {
@@ -49,9 +77,10 @@ export default function InputForm() {
         method: 'POST',
         body: JSON.stringify(data),
       });
-      const result = await response.json();
-
-      console.log(result);
+      httpStatusToMessage(response.status);
+      if (response.status === 201) {
+        router.push('/?isOpenLoginDialog=true');
+      }
     }
   };
 
@@ -146,11 +175,12 @@ export default function InputForm() {
               type='submit'
               className='w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-all duration-300'
             >
-              Submit
+              註冊
             </Button>
           </form>
         </Form>
       </div>
     </div>
   );
-}
+};
+export default Page;
