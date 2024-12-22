@@ -77,7 +77,7 @@ const MySidebar = () => {
               />
             )}
           </div>
-          <div className='flex justify-center'>
+          <div className='flex justify-center p-4'>
             {session.status === 'unauthenticated' ? (
               <LoginDialog />
             ) : (
