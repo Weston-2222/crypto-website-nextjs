@@ -1,4 +1,4 @@
-import redis from '@/lib/redis';
+// import redis from '@/lib/redis';
 import { CoinCategoriesApiResponse } from '@/types/api/coingecko/coinCategories';
 
 const fetchCoinCategoriesData = async (): Promise<
@@ -11,7 +11,9 @@ const fetchCoinCategoriesData = async (): Promise<
         accept: 'application/json',
         'x-cg-demo-api-key': process.env.COINGECKO_API_KEY || '',
       },
-      cache: 'no-store',
+      next: {
+        revalidate: 3600,
+      },
     }
   );
   if (!response.ok) {
@@ -27,27 +29,26 @@ export const getCoinCategoriesData = async (): Promise<
   CoinCategoriesApiResponse[]
 > => {
   // 從Redis獲取數據
-  try {
-    const cachedData = await redis.get(`coin_categories`);
-    if (cachedData) {
-      return JSON.parse(cachedData);
-    }
-  } catch (error) {
-    console.error('獲取redis幣種類別資料失敗', error);
-  }
+  // try {
+  //   const cachedData = await redis.get(`coin_categories`);
+  //   if (cachedData) {
+  //     return JSON.parse(cachedData);
+  //   }
+  // } catch (error) {
+  //   console.error('獲取redis幣種類別資料失敗', error);
+  // }
   try {
     // 從CoinGecko獲取數據
     const data = await fetchCoinCategoriesData();
     // 將數據存入Redis
-    try {
-      await redis.set(`coin_categories`, JSON.stringify(data), 'EX', 86400);
-    } catch (error) {
-      console.error('存入redis幣種類別資料失敗', error);
-    }
+    // try {
+    //   await redis.set(`coin_categories`, JSON.stringify(data), 'EX', 86400);
+    // } catch (error) {
+    //   console.error('存入redis幣種類別資料失敗', error);
+    // }
     return data;
   } catch (error) {
     console.error('獲取CoinGecko幣種類別資料失敗', error);
-    throw error;
   }
   return [];
 };
