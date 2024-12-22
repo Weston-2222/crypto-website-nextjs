@@ -3,7 +3,7 @@ import 'client-only';
 import { CoinsMarketsApiResponse } from '@/types/api/coingecko/coinsMarkets';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import Image from 'next/image';
-import { formatNumberWithCommas } from '@/lib/utils';
+import { cn, formatNumberWithCommas } from '@/lib/utils';
 import {
   IconArrowBadgeUpFilled,
   IconArrowBadgeDownFilled,
@@ -24,12 +24,31 @@ export const CoinMasketsCapTable = ({
 
     const [name, symbol] = name_symbol.split('_');
     const symbolUpper = symbol.toUpperCase();
+    const backgroundColor =
+      'dark:bg-black bg-white lg:bg-transparent lg:dark:bg-transparent';
     return (
-      <p className='flex items-center'>
-        <span>{name}</span>
-        <span>&nbsp;&nbsp;</span>
-        <span className='text-gray-500'>{symbolUpper}</span>
-      </p>
+      <div className={cn('flex items-center', backgroundColor)}>
+        <span className='p-4'>{info.row.original.market_cap_rank}</span>
+        <Image
+          src={info.row.original.image}
+          alt='Row Image'
+          width={25}
+          height={25}
+          className={cn(
+            'h-auto w-auto min-w-[25px] min-h-[25px] px-2',
+            backgroundColor
+          )}
+        />
+        <div
+          className={cn(
+            'flex flex-col lg:flex-row lg:items-center justify-start',
+            backgroundColor
+          )}
+        >
+          <span className='lg:p-2'>{name}</span>
+          <span className='text-gray-500'>{symbolUpper}</span>
+        </div>
+      </div>
     );
   }
   const newData = data.map((item) => {
@@ -42,27 +61,10 @@ export const CoinMasketsCapTable = ({
   const getCoinMasketsCapTableConfig =
     (): ColumnDef<CoinsMarketsApiResponse>[] => [
       {
-        accessorKey: 'market_cap_rank',
-        header: '市值排名',
-      },
-      {
-        accessorKey: 'image',
-        header: '',
-        cell: (info: CellContext<CoinsMarketsApiResponse, unknown>) => {
-          return (
-            <Image
-              src={info.getValue() as string}
-              alt='Row Image'
-              width={25}
-              height={25}
-              className='h-auto w-auto min-w-[25px] min-h-[25px]'
-            />
-          );
-        },
-      },
-      {
         accessorKey: 'name_symbol',
-        header: '貨幣',
+        header: () => (
+          <p className='dark:bg-black bg-white inline-block p-4'>貨幣</p>
+        ),
         cell: (info: CellContext<CoinsMarketsApiResponse, unknown>) => {
           return renderNameSymbolCell(info);
         },

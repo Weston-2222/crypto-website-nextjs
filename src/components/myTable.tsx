@@ -14,12 +14,19 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
 type MyDataTableProps<T> = {
   data: T[]; // 泛型數據
   columns: ColumnDef<T>[]; // 列定義
   onRowClick?: (info: T) => void;
+  className?: string;
 };
-const MyTable = <T,>({ data, columns, onRowClick }: MyDataTableProps<T>) => {
+const MyTable = <T,>({
+  data,
+  columns,
+  onRowClick,
+  className,
+}: MyDataTableProps<T>) => {
   const table = useReactTable({
     data,
     columns,
@@ -27,14 +34,19 @@ const MyTable = <T,>({ data, columns, onRowClick }: MyDataTableProps<T>) => {
   });
 
   return (
-    <div className='rounded-md border'>
+    <div className={cn('rounded-md border', className)}>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
+              {headerGroup.headers.map((header, index) => {
+                let className = '';
+                if (index === 0) {
+                  className = 'sticky left-0 z-10 p-0 lg:px-4';
+                }
+
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className={className}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -56,17 +68,25 @@ const MyTable = <T,>({ data, columns, onRowClick }: MyDataTableProps<T>) => {
                   data-state={row.getIsSelected() && 'selected'}
                   className='cursor-pointer'
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      onClick={() => onRowClick?.(row.original)}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell, index) => {
+                    let className = '';
+                    if (index === 0) {
+                      className = 'sticky left-0 z-10 p-0';
+                    }
+
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        onClick={() => onRowClick?.(row.original)}
+                        className={className}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    );
+                  })}
                 </TableRow>
               );
             })

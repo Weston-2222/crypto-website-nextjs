@@ -10,7 +10,7 @@ const Page = async () => {
     const data = await getCoinMarketsData();
 
     return (
-      <div className='container mx-auto p-10'>
+      <div className='container mx-auto p-0'>
         <h1 className='text-3xl p-5'>市值排名</h1>
         <CoinMasketsCapTable data={data} />
       </div>

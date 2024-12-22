@@ -54,11 +54,13 @@ const MySidebar = () => {
 
   return (
     <Sidebar open={open} setOpen={setOpen} animate={false}>
-      <SidebarBody className='justify-between gap-10'>
+      <SidebarBody
+        className='justify-between gap-10'
+        mobileWebsiteTitle={<Logo />}
+      >
         <div className='flex flex-col flex-1 overflow-y-auto overflow-x-hidden'>
-          <>
-            <Logo />
-          </>
+          <Logo />
+
           <div className='mt-8 flex flex-col gap-2'>
             {links.map((link, idx) => (
               <SidebarLink key={idx} link={link} />
