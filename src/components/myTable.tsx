@@ -43,7 +43,7 @@ const MyTable = <T,>({
                 let className = '';
                 if (index === 0) {
                   className =
-                    'sticky left-0 z-10 p-0 lg:px-4 dark:bg-black bg-white';
+                    'sticky left-0 z-10 p-0 lg:px-4 dark:bg-black bg-gray-100';
                 }
 
                 return (

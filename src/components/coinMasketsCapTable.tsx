@@ -25,7 +25,7 @@ export const CoinMasketsCapTable = ({
     const [name, symbol] = name_symbol.split('_');
     const symbolUpper = symbol.toUpperCase();
     const backgroundColor =
-      'dark:bg-black bg-white lg:bg-transparent lg:dark:bg-transparent';
+      'dark:bg-black bg-gray-100 lg:bg-transparent lg:dark:bg-transparent';
     return (
       <div className={cn('flex items-center', backgroundColor)}>
         <span className='p-4'>{info.row.original.market_cap_rank}</span>
@@ -63,7 +63,7 @@ export const CoinMasketsCapTable = ({
       {
         accessorKey: 'name_symbol',
         header: () => (
-          <p className='dark:bg-black bg-white inline-block p-4'>貨幣</p>
+          <p className='dark:bg-black bg-gray-100 inline-block p-4'>貨幣</p>
         ),
         cell: (info: CellContext<CoinsMarketsApiResponse, unknown>) => {
           return renderNameSymbolCell(info);
