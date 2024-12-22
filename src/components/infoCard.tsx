@@ -22,8 +22,7 @@ export type InfoCardConfig = {
   content: Content[];
 };
 const InfoCard = ({ config }: { config: InfoCardConfig }) => {
-  if (config.content[0].value === 0) return null;
-
+  if (!config.content.every((item) => item.value)) return null;
   return (
     <Card className='border-none'>
       <CardHeader>
