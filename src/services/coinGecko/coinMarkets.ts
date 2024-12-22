@@ -1,4 +1,4 @@
-import redis from '@/lib/redis';
+// import redis from '@/lib/redis';
 import { CoinsMarketsApiResponse } from '@/types/api/coingecko/coinsMarkets';
 
 const fetchCoinMarketData = async (): Promise<CoinsMarketsApiResponse[]> => {
@@ -10,7 +10,9 @@ const fetchCoinMarketData = async (): Promise<CoinsMarketsApiResponse[]> => {
       accept: 'application/json',
       'x-cg-demo-api-key': process.env.COINGECKO_API_KEY || '',
     },
-    cache: 'no-store',
+    next: {
+      revalidate: 60,
+    },
   });
   if (!response.ok) {
     throw new Error(response.statusText);
@@ -39,33 +41,33 @@ export const getCoinMarketsData = async (
   }
 
   // 檢查 Redis 緩存
-  try {
-    const cachedData = await redis.get(`coin_markets`);
-    // 如果 Redis 緩存有數據，返回緩存
-    if (cachedData !== null) {
-      return ids
-        ? JSON.parse(cachedData).filter((item: CoinsMarketsApiResponse) =>
-            ids.includes(item.id)
-          )
-        : JSON.parse(cachedData);
-    }
-  } catch (error) {
-    console.error('獲取redis市場資料失敗', error);
-  }
+  // try {
+  //   const cachedData = await redis.get(`coin_markets`);
+  //   // 如果 Redis 緩存有數據，返回緩存
+  //   if (cachedData !== null) {
+  //     return ids
+  //       ? JSON.parse(cachedData).filter((item: CoinsMarketsApiResponse) =>
+  //           ids.includes(item.id)
+  //         )
+  //       : JSON.parse(cachedData);
+  //   }
+  // } catch (error) {
+  //   console.error('獲取redis市場資料失敗', error);
+  // }
   // 如果 Redis 緩存沒有數據，從 CoinGecko API 獲取
   try {
     const data = await fetchCoinMarketData();
     // 將數據存入 Redis
-    try {
-      await redis.set(
-        'coin_markets',
-        JSON.stringify(data),
-        'EX',
-        process.env.REDIS_TTL || 3600
-      );
-    } catch (error) {
-      console.error('緩存市場資料失敗', error);
-    }
+    // try {
+    //   await redis.set(
+    //     'coin_markets',
+    //     JSON.stringify(data),
+    //     'EX',
+    //     process.env.REDIS_TTL || 3600
+    //   );
+    // } catch (error) {
+    //   console.error('緩存市場資料失敗', error);
+    // }
     // 返回數據
     return ids
       ? data.filter((item: CoinsMarketsApiResponse) => ids.includes(item.id))
