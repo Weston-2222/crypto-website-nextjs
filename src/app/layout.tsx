@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 import { SessionProvider } from 'next-auth/react';
 import MySidebar from './mySidebar';
+import { Toaster } from '@/components/ui/toaster';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -18,7 +19,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               style={{ overflowY: 'auto' }}
             >
               <MySidebar />
-              <Dashboard>{children}</Dashboard>
+              <Dashboard>
+                {children} <Toaster />
+              </Dashboard>
             </div>
           </ThemeProvider>
         </SessionProvider>
