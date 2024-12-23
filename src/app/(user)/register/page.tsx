@@ -79,7 +79,7 @@ const Page = () => {
       });
       httpStatusToMessage(response.status);
       if (response.status === 201) {
-        router.push('/?isOpenLoginDialog=true');
+        router.push('/login');
       }
     }
   };
