@@ -34,7 +34,12 @@ const MyTable = <T,>({
   });
 
   return (
-    <div className={cn('rounded-md border', className)}>
+    <div
+      className={cn(
+        'rounded-md border p-2  bg-gray-100 dark:bg-black',
+        className
+      )}
+    >
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
