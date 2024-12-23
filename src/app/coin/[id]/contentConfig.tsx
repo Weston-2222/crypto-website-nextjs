@@ -71,18 +71,20 @@ export const getDeveloperInfoConfig = (
     content: [
       {
         label: '星星數量',
-        value: coinData.developer_data.stars,
+        value: coinData.developer_data.stars && coinData.developer_data.stars,
         tooltip: null,
       },
       {
         label: '分支數量',
-        value: coinData.developer_data.forks,
+        value: coinData.developer_data.forks && coinData.developer_data.forks,
         tooltip: null,
       },
 
       {
         label: '四週內的提交次數',
-        value: coinData.developer_data.commit_count_4_weeks,
+        value:
+          coinData.developer_data.commit_count_4_weeks &&
+          coinData.developer_data.commit_count_4_weeks,
         tooltip: null,
       },
     ],

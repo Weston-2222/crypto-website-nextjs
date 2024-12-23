@@ -1,7 +1,6 @@
 'use client';
 import 'client-only';
 import { useState } from 'react';
-import LoginDialog from '@/components/loginDialog';
 import { Sidebar, SidebarBody, SidebarLink } from '@/components/ui/sidebar';
 import { ThemeToggle } from '@/components/themeToggle';
 import Link from 'next/link';
@@ -15,6 +14,7 @@ import {
 
 import { signOut, useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 const links = [
   {
     label: '市值排行',
@@ -51,14 +51,16 @@ const Logo = () => {
 const MySidebar = () => {
   const [open, setOpen] = useState(false);
   const session = useSession();
-
+  const router = useRouter();
   return (
     <Sidebar open={open} setOpen={setOpen} animate={false}>
-      <SidebarBody className='justify-between gap-10'>
+      <SidebarBody
+        className='justify-between gap-10'
+        mobileWebsiteTitle={<Logo />}
+      >
         <div className='flex flex-col flex-1 overflow-y-auto overflow-x-hidden'>
-          <>
-            <Logo />
-          </>
+          <Logo />
+
           <div className='mt-8 flex flex-col gap-2'>
             {links.map((link, idx) => (
               <SidebarLink key={idx} link={link} />
@@ -75,9 +77,9 @@ const MySidebar = () => {
               />
             )}
           </div>
-          <div className='flex justify-center'>
+          <div className='flex justify-center p-4'>
             {session.status === 'unauthenticated' ? (
-              <LoginDialog />
+              <Button onClick={() => router.push('/login')}>登入</Button>
             ) : (
               <Button onClick={() => signOut()}>登出</Button>
             )}
