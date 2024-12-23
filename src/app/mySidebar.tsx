@@ -1,6 +1,6 @@
 'use client';
 import 'client-only';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Sidebar, SidebarBody, SidebarLink } from '@/components/ui/sidebar';
 import { ThemeToggle } from '@/components/themeToggle';
 import Link from 'next/link';
@@ -36,6 +36,11 @@ const MySidebar = () => {
   const [open, setOpen] = useState(false);
   const session = useSession();
   const router = useRouter();
+  useEffect(() => {
+    if (session.status === 'unauthenticated') {
+      router.push('/');
+    }
+  }, [session.status, router]);
   const Logo = () => {
     return (
       <Link
@@ -87,17 +92,17 @@ const MySidebar = () => {
             {session.status === 'unauthenticated' ? (
               <Button
                 onClick={() => {
-                  setOpen(false);
                   router.push('/login');
+                  setOpen(false);
                 }}
               >
                 登入
               </Button>
             ) : (
               <Button
-                onClick={() => {
+                onClick={async () => {
+                  await signOut();
                   setOpen(false);
-                  signOut();
                 }}
               >
                 登出
