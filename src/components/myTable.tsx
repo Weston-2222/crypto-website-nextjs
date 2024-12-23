@@ -37,6 +37,7 @@ const MyTable = <T,>({
     <div
       className={cn(
         'rounded-md border p-2  bg-gray-100 dark:bg-black',
+
         className
       )}
     >
@@ -47,8 +48,7 @@ const MyTable = <T,>({
               {headerGroup.headers.map((header, index) => {
                 let className = '';
                 if (index === 0) {
-                  className =
-                    'sticky left-0 z-10 p-0 lg:px-4 dark:bg-black bg-gray-100';
+                  className = 'sticky left-0 z-10 p-0 lg:px-4';
                 }
 
                 return (
@@ -72,7 +72,7 @@ const MyTable = <T,>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  className='cursor-pointer'
+                  className='cursor-pointer dark:hover:bg-gray-800 hover:bg-gray-200'
                 >
                   {row.getVisibleCells().map((cell, index) => {
                     let className = '';
@@ -84,7 +84,7 @@ const MyTable = <T,>({
                       <TableCell
                         key={cell.id}
                         onClick={() => onRowClick?.(row.original)}
-                        className={className}
+                        className={cn(className)}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
