@@ -55,6 +55,12 @@ const Page = () => {
           description: '該 Email 已被註冊',
         });
         break;
+      default:
+        toast({
+          title: '註冊失敗',
+          description: '伺服器錯誤',
+        });
+        break;
     }
   };
 

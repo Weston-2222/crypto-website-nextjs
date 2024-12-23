@@ -16,6 +16,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { toast } from '@/hooks/use-toast';
 
 const MyLogin = () => {
   const router = useRouter();
@@ -50,12 +51,19 @@ const MyLogin = () => {
       if (status == 400) {
         alert('登入參數未提供');
       } else if (status == 401) {
-        alert('密碼錯誤');
+        alert('email或密碼錯誤');
       } else if (status == 404) {
         alert('用戶不存在');
+      } else if (status !== 200 || result.error) {
+        alert('伺服器錯誤');
       }
     }
-    if (result?.ok) router.push('/');
+    if (result?.ok) {
+      router.push('/');
+      toast({
+        title: '登入成功',
+      });
+    }
   };
 
   return (
