@@ -6,26 +6,12 @@ import {
 } from '@tabler/icons-react';
 import { formatNumberWithCommas } from '@/lib/utils';
 import MyFavoriteCoinButton from './myFavoriteCoinButton';
+import { getCoinMarketsData } from '@/services/coinGecko/coinMarkets';
 
-export const revalidate = 3600;
-
-const getCoinsMarketsData = async (
-  id: string
-): Promise<CoinsMarketsApiResponse> => {
-  const res = await fetch(
-    `${process.env.COINGECKO_API_URL}/coins/markets?vs_currency=usd&ids=${id}`,
-    {
-      headers: {
-        'X-CMC_PRO_API_KEY': process.env.COINGECKO_API_KEY || '',
-        accept: 'application/json',
-      },
-    }
-  );
-  const data = await res.json();
-  return data[0];
-};
 const coinTitle = async ({ id }: { id: string }) => {
-  const data = await getCoinsMarketsData(id);
+  const [data]: CoinsMarketsApiResponse[] = await getCoinMarketsData({
+    ids: [id],
+  });
 
   if (!data) {
     return <div>無資料</div>;
