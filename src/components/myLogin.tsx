@@ -38,6 +38,7 @@ const MyLogin = () => {
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     const { email, password } = data;
+
     const result = await signIn('credentials', {
       redirect: false,
       email,
@@ -45,11 +46,16 @@ const MyLogin = () => {
       callbackUrl: '/',
     });
     if (result?.error) {
-      alert('登入失敗，請檢查您的電子郵件和密碼。');
+      const status = parseInt(result.error.split('|')[0]);
+      if (status == 400) {
+        alert('登入參數未提供');
+      } else if (status == 401) {
+        alert('密碼錯誤');
+      } else if (status == 404) {
+        alert('用戶不存在');
+      }
     }
-    if (result?.ok) {
-      router.push('/');
-    }
+    if (result?.ok) router.push('/');
   };
 
   return (
