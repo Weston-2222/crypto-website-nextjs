@@ -21,8 +21,8 @@ const Page = async ({
           defaultOpen={params.isOpenLoginDialog == 'true'}
           isIcon={false}
         />
-        <div className='container mx-auto p-0 bg-gray-100 dark:bg-black'>
-          <h1 className='text-3xl p-5'>市值排名</h1>
+        <div className='container mx-auto p-0'>
+          <h1 className='text-3xl p-2'>市值排名</h1>
           <CoinMasketsCapTable data={data} />
         </div>
       </>
