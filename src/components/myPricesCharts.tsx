@@ -109,7 +109,7 @@ const MyPricesCharts = ({
       });
     }
   }, [period, getCoinPricesChartData]);
-  const daysList = [
+  const daysList_one = [
     {
       value: '1_days',
       label: '1 Day',
@@ -126,6 +126,8 @@ const MyPricesCharts = ({
       value: '90_days',
       label: '90 Days',
     },
+  ];
+  const daysList_two = [
     {
       value: '180_days',
       label: '180 Days',
@@ -135,16 +137,26 @@ const MyPricesCharts = ({
       label: '365 Days',
     },
   ];
-
   return (
     <>
       <Tabs
-        defaultValue={daysList[0].value}
+        defaultValue={daysList_one[0].value}
         className='w-full h-full'
         onValueChange={(value) => setPeriod(value)}
       >
         <TabsList>
-          {daysList.map((day) => (
+          {daysList_one.map((day) => (
+            <TabsTrigger
+              key={day.value}
+              value={day.value}
+              className='hover:text-primary'
+            >
+              {day.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        <TabsList>
+          {daysList_two.map((day) => (
             <TabsTrigger
               key={day.value}
               value={day.value}
