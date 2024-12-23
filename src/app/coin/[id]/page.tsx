@@ -16,7 +16,9 @@ const CoinPage = async ({ params }: { params: Promise<{ id: string }> }) => {
     <>
       <div className='w-full'>
         <div>
-          <Suspense fallback={<Loading loadingSize='w-20 h-20' />}>
+          <Suspense
+            fallback={<Loading loadingSize='w-20 h-20' className='h-[100px]' />}
+          >
             <Mymotion>
               <CoinTitle id={id} />
             </Mymotion>
@@ -27,7 +29,7 @@ const CoinPage = async ({ params }: { params: Promise<{ id: string }> }) => {
         {/* 在中小螢幕時 CoinPriceTabs 在上面，正常電腦螢幕時 CoinPriceTabs 在右邊 */}
         <div className='xl:order-2 w-full xl:w-2/3'>
           <Suspense
-            fallback={<Loading className='h-1/2' loadingSize='w-20 h-20' />}
+            fallback={<Loading className='h-[600px]' loadingSize='w-20 h-20' />}
           >
             <Mymotion>
               <PriceChart id={id} />
@@ -48,7 +50,7 @@ const CoinPage = async ({ params }: { params: Promise<{ id: string }> }) => {
         <div className='xl:order-1 w-full xl:w-1/3'>
           {/* 市場資料 */}
           <Suspense
-            fallback={<Loading className='h-1/2' loadingSize='w-20 h-20' />}
+            fallback={<Loading className='h-[500px]' loadingSize='w-20 h-20' />}
           >
             <Mymotion>
               <MarketInfo id={id} />
