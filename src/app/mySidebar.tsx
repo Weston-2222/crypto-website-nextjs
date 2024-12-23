@@ -34,7 +34,6 @@ const links = [
 
 const MySidebar = () => {
   const [open, setOpen] = useState(false);
-  console.log(open);
   const session = useSession();
   const router = useRouter();
   const Logo = () => {
