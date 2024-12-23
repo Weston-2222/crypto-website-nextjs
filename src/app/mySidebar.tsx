@@ -9,6 +9,7 @@ import {
   IconCategory,
   IconChartBarPopular,
   IconCoinBitcoin,
+  IconInfoCircle,
   IconUserBolt,
 } from '@tabler/icons-react';
 
@@ -87,6 +88,17 @@ const MySidebar = () => {
                 />
               </div>
             )}
+            <div onClick={() => setOpen(false)}>
+              <SidebarLink
+                link={{
+                  label: '關於我們',
+                  href: '/about',
+                  icon: (
+                    <IconInfoCircle className='text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0' />
+                  ),
+                }}
+              />
+            </div>
           </div>
           <div className='flex justify-center p-4'>
             {session.status === 'unauthenticated' ? (

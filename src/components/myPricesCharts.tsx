@@ -21,6 +21,7 @@ import { CoinMarketChartApiResponse } from '@/types/api/coingecko/coinMarketChar
 
 import Loading from './loading';
 import { formatPriceUnit } from '@/lib/utils';
+import { toast } from '@/hooks/use-toast';
 enum Days {
   '1_days' = 1,
   '7_days' = 7,
@@ -78,13 +79,20 @@ const MyPricesCharts = ({
       url.searchParams.append('coinId', coinId);
       url.searchParams.append('days', value);
 
-      const data = await fetch(url.toString(), {
+      const res = await fetch(url.toString(), {
         method: 'GET',
         headers: {
           accept: 'application/json',
         },
       });
-      const coinPricesChartData: CoinMarketChartApiResponse = await data.json();
+      if (res.status !== 200) {
+        toast({
+          title: '伺服器錯誤',
+          variant: 'destructive',
+        });
+        return [];
+      }
+      const coinPricesChartData: CoinMarketChartApiResponse = await res.json();
       return coinPricesChartData.prices.map((price, index) => ({
         price: price[1],
         time: `${new Date(price[0]).toLocaleDateString()} ${new Date(
