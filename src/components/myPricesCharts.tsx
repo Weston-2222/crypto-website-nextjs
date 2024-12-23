@@ -21,6 +21,7 @@ import { CoinMarketChartApiResponse } from '@/types/api/coingecko/coinMarketChar
 
 import Loading from './loading';
 import { formatPriceUnit } from '@/lib/utils';
+import { toast } from '@/hooks/use-toast';
 enum Days {
   '1_days' = 1,
   '7_days' = 7,
@@ -78,13 +79,20 @@ const MyPricesCharts = ({
       url.searchParams.append('coinId', coinId);
       url.searchParams.append('days', value);
 
-      const data = await fetch(url.toString(), {
+      const res = await fetch(url.toString(), {
         method: 'GET',
         headers: {
           accept: 'application/json',
         },
       });
-      const coinPricesChartData: CoinMarketChartApiResponse = await data.json();
+      if (res.status !== 200) {
+        toast({
+          title: '伺服器錯誤',
+          variant: 'destructive',
+        });
+        return [];
+      }
+      const coinPricesChartData: CoinMarketChartApiResponse = await res.json();
       return coinPricesChartData.prices.map((price, index) => ({
         price: price[1],
         time: `${new Date(price[0]).toLocaleDateString()} ${new Date(
@@ -109,7 +117,7 @@ const MyPricesCharts = ({
       });
     }
   }, [period, getCoinPricesChartData]);
-  const daysList = [
+  const daysList_one = [
     {
       value: '1_days',
       label: '1 Day',
@@ -126,6 +134,8 @@ const MyPricesCharts = ({
       value: '90_days',
       label: '90 Days',
     },
+  ];
+  const daysList_two = [
     {
       value: '180_days',
       label: '180 Days',
@@ -135,16 +145,26 @@ const MyPricesCharts = ({
       label: '365 Days',
     },
   ];
-
   return (
     <>
       <Tabs
-        defaultValue={daysList[0].value}
+        defaultValue={daysList_one[0].value}
         className='w-full h-full'
         onValueChange={(value) => setPeriod(value)}
       >
         <TabsList>
-          {daysList.map((day) => (
+          {daysList_one.map((day) => (
+            <TabsTrigger
+              key={day.value}
+              value={day.value}
+              className='hover:text-primary'
+            >
+              {day.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        <TabsList>
+          {daysList_two.map((day) => (
             <TabsTrigger
               key={day.value}
               value={day.value}

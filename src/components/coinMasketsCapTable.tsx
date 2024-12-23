@@ -27,21 +27,23 @@ export const CoinMasketsCapTable = ({
     const backgroundColor =
       'dark:bg-black bg-gray-100 lg:bg-transparent lg:dark:bg-transparent';
     return (
-      <div className={cn('flex items-center', backgroundColor)}>
-        <span className='p-4'>{info.row.original.market_cap_rank}</span>
+      <div className={cn('flex items-center')}>
+        <span className={cn('p-4', backgroundColor)}>
+          {info.row.original.market_cap_rank}
+        </span>
         <Image
           src={info.row.original.image}
           alt='Row Image'
           width={25}
           height={25}
           className={cn(
-            'h-auto w-auto min-w-[25px] min-h-[25px] px-2',
+            'h-auto w-auto min-w-[25px] min-h-[25px]',
             backgroundColor
           )}
         />
         <div
           className={cn(
-            'flex flex-col lg:flex-row lg:items-center justify-start',
+            'flex flex-col lg:flex-row lg:items-center justify-start px-2',
             backgroundColor
           )}
         >

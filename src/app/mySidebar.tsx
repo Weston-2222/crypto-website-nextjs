@@ -1,6 +1,6 @@
 'use client';
 import 'client-only';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Sidebar, SidebarBody, SidebarLink } from '@/components/ui/sidebar';
 import { ThemeToggle } from '@/components/themeToggle';
 import Link from 'next/link';
@@ -9,6 +9,7 @@ import {
   IconCategory,
   IconChartBarPopular,
   IconCoinBitcoin,
+  IconInfoCircle,
   IconUserBolt,
 } from '@tabler/icons-react';
 
@@ -31,27 +32,34 @@ const links = [
     ),
   },
 ];
-const Logo = () => {
-  return (
-    <Link
-      href='/'
-      className='font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20'
-    >
-      <IconCoinBitcoin className='text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0' />
-      <motion.span
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className='font-medium text-black dark:text-white whitespace-pre'
-      >
-        Crypto Infomation Website
-      </motion.span>
-    </Link>
-  );
-};
+
 const MySidebar = () => {
   const [open, setOpen] = useState(false);
   const session = useSession();
   const router = useRouter();
+  useEffect(() => {
+    if (session.status === 'unauthenticated') {
+      router.push('/');
+    }
+  }, [session.status, router]);
+  const Logo = () => {
+    return (
+      <Link
+        onClick={() => setOpen(false)}
+        href='/'
+        className='font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20'
+      >
+        <IconCoinBitcoin className='text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0' />
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className='font-medium text-black dark:text-white whitespace-pre'
+        >
+          Crypto Infomation Website
+        </motion.span>
+      </Link>
+    );
+  };
   return (
     <Sidebar open={open} setOpen={setOpen} animate={false}>
       <SidebarBody
@@ -63,25 +71,54 @@ const MySidebar = () => {
 
           <div className='mt-8 flex flex-col gap-2'>
             {links.map((link, idx) => (
-              <SidebarLink key={idx} link={link} />
+              <div onClick={() => setOpen(false)} key={idx}>
+                <SidebarLink key={idx} link={link} />
+              </div>
             ))}
             {session.status === 'authenticated' && (
+              <div onClick={() => setOpen(false)}>
+                <SidebarLink
+                  link={{
+                    label: '個人頁面',
+                    href: '/profile',
+                    icon: (
+                      <IconUserBolt className='text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0' />
+                    ),
+                  }}
+                />
+              </div>
+            )}
+            <div onClick={() => setOpen(false)}>
               <SidebarLink
                 link={{
-                  label: '個人頁面',
-                  href: '/profile',
+                  label: '關於我們',
+                  href: '/about',
                   icon: (
-                    <IconUserBolt className='text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0' />
+                    <IconInfoCircle className='text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0' />
                   ),
                 }}
               />
-            )}
+            </div>
           </div>
           <div className='flex justify-center p-4'>
             {session.status === 'unauthenticated' ? (
-              <Button onClick={() => router.push('/login')}>登入</Button>
+              <Button
+                onClick={() => {
+                  router.push('/login');
+                  setOpen(false);
+                }}
+              >
+                登入
+              </Button>
             ) : (
-              <Button onClick={() => signOut()}>登出</Button>
+              <Button
+                onClick={async () => {
+                  await signOut();
+                  setOpen(false);
+                }}
+              >
+                登出
+              </Button>
             )}
           </div>
         </div>

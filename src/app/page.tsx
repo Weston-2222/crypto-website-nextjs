@@ -3,7 +3,7 @@ import React from 'react';
 import CoinMasketsCapTable from '../components/coinMasketsCapTable';
 import { getCoinMarketsData } from '@/services/coinGecko/coinMarkets';
 
-export const revalidate = 3600; // 每小時重新生成靜態頁面（3600 秒）
+export const revalidate = 60; // 每小時重新生成靜態頁面（3600 秒）
 
 const Page = async () => {
   try {

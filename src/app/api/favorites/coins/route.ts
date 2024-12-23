@@ -11,7 +11,7 @@ export const GET = async (req: NextRequest) => {
   // 取得token
   const token = await getToken({ req });
   if (!token) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ message: '未授權' }, { status: 401 });
   }
 
   // 連接資料庫
@@ -23,7 +23,7 @@ export const GET = async (req: NextRequest) => {
     const user = await User.findById(token.sub);
     // 如果user不存在，回傳404
     if (!user) {
-      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+      return NextResponse.json({ message: '用戶不存在' }, { status: 404 });
     }
     // 取得user的收藏列表
     const favoriteCoins = await user.getCoins();
@@ -32,10 +32,10 @@ export const GET = async (req: NextRequest) => {
       message: 'Success',
       coins: favoriteCoins,
     };
-    return NextResponse.json(res);
+    return NextResponse.json(res, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { message: 'Transaction failed', error: (error as Error).message },
+      { message: '伺服器錯誤', error: (error as Error).message },
       { status: 500 }
     );
   }
@@ -43,17 +43,32 @@ export const GET = async (req: NextRequest) => {
 export const POST = async (req: NextRequest) => {
   // 取得token
   const token = await getToken({ req });
-  // 如果token不存在，回傳401
-  if (!token) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+
+  // 驗證token是否存在
+  if (!token || !token.sub) {
+    return NextResponse.json({ message: '未授權' }, { status: 401 });
   }
+
   // 取得request body
-  const result: FavoriteRequest = await req.json();
-  if (!result.coins) {
-    return NextResponse.json({ message: 'No coins' }, { status: 400 });
+  let result: FavoriteRequest;
+  try {
+    result = await req.json();
+  } catch {
+    return NextResponse.json({ message: '格式錯誤' }, { status: 422 });
   }
+
+  // 檢查coins格式
+  if (
+    !result ||
+    !Array.isArray(result.coins) ||
+    result.coins.some((coin) => !coin.coin_id)
+  ) {
+    return NextResponse.json({ message: '格式錯誤' }, { status: 422 });
+  }
+
   // 連接資料庫
   await connectToDB();
+
   // 開啟transaction
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -61,92 +76,113 @@ export const POST = async (req: NextRequest) => {
   try {
     // 取得user
     const user = await User.findOne({ _id: token.sub }).session(session);
-    // 如果user不存在，回傳404
     if (!user) {
       await session.abortTransaction();
-      session.endSession();
-      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+      return NextResponse.json({ message: '用戶不存在' }, { status: 404 });
     }
-    // 取得user的收藏列表
+
+    // 取得收藏的幣種
     const favoriteCoins = await user.getCoins();
-    // 過濾掉已經在收藏列表中的幣種
     const favoriteCoinIds = favoriteCoins.map((coin) => coin.coin_id);
 
+    // 過濾新增的幣種
     const addCoins = result.coins
       .filter((coin) => !favoriteCoinIds.includes(coin.coin_id))
       .map((coin) => ({ coin_id: coin.coin_id, createdAt: new Date() }));
 
-    // 把新的幣種加入收藏列表
-    const addCoinResult = await user.addCoins(addCoins);
-    // 如果加入失敗，回傳500
-    if (!addCoinResult) {
-      await session.abortTransaction();
-      session.endSession();
-      return NextResponse.json(
-        { message: 'Failed to add coin' },
-        { status: 500 }
-      );
+    // 新增收藏幣種
+    if (addCoins.length > 0) {
+      const addCoinResult = await user.addCoins(addCoins);
+      if (!addCoinResult) {
+        await session.abortTransaction();
+        return NextResponse.json({ message: '收藏失敗' }, { status: 500 });
+      }
     }
 
+    // 提交transaction
     await session.commitTransaction();
-    session.endSession();
-    return NextResponse.json({ message: 'Success' });
+    return NextResponse.json({ message: '收藏成功' }, { status: 201 });
   } catch (error) {
+    // 捕捉錯誤
     await session.abortTransaction();
-    session.endSession();
     return NextResponse.json(
-      { message: 'Transaction failed', error: (error as Error).message },
+      {
+        message: '伺服器錯誤',
+        error:
+          process.env.NODE_ENV === 'development'
+            ? (error as Error).message
+            : undefined,
+      },
       { status: 500 }
     );
+  } finally {
+    // 確保session結束
+    session.endSession();
   }
 };
+
 export const DELETE = async (req: NextRequest) => {
-  // 取得token
+  // 取得 token
   const token = await getToken({ req });
-  // 如果token不存在，回傳401
-  if (!token) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+
+  if (!token || !token.sub) {
+    return NextResponse.json({ message: '未授權' }, { status: 401 });
   }
-  // 取得request body
-  const result: FavoriteRequest = await req.json();
-  if (!result.coins) {
-    return NextResponse.json({ message: 'No coins' }, { status: 400 });
+
+  let result: FavoriteRequest;
+  try {
+    result = await req.json();
+  } catch {
+    return NextResponse.json({ message: '請求格式錯誤' }, { status: 400 });
   }
-  // 連接資料庫
+
+  if (
+    !result ||
+    !Array.isArray(result.coins) ||
+    result.coins.some((coin) => !coin.coin_id)
+  ) {
+    return NextResponse.json(
+      { message: '沒有要刪除的幣種或格式錯誤' },
+      { status: 400 }
+    );
+  }
+
   await connectToDB();
-  // 開啟transaction
+
   const session = await mongoose.startSession();
+  let transactionCommitted = false; // 標記交易是否已提交
   session.startTransaction();
 
   try {
-    // 取得user
     const user = await User.findOne({ _id: token.sub }).session(session);
-    // 如果user不存在，回傳404
     if (!user) {
-      await session.abortTransaction();
-      session.endSession();
-      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+      throw new Error('用戶不存在');
     }
+
     const deleteCoinResult = await user.deleteCoins(result.coins);
-    // 如果加入失敗，回傳500
     if (!deleteCoinResult) {
-      await session.abortTransaction();
-      session.endSession();
-      return NextResponse.json(
-        { message: 'Failed to delete coin' },
-        { status: 500 }
-      );
+      throw new Error('刪除失敗');
     }
 
     await session.commitTransaction();
-    session.endSession();
-    return NextResponse.json({ message: 'Success' });
+    transactionCommitted = true;
+
+    return NextResponse.json({ message: '刪除成功' }, { status: 200 });
   } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
+    if (!transactionCommitted) {
+      await session.abortTransaction();
+    }
     return NextResponse.json(
-      { message: 'Transaction failed', error: (error as Error).message },
+      {
+        message: '伺服器錯誤，刪除失敗',
+        error:
+          process.env.NODE_ENV === 'development'
+            ? (error as Error).message
+            : undefined,
+      },
       { status: 500 }
     );
+  } finally {
+    session.endSession();
   }
 };

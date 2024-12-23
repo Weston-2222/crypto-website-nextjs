@@ -1,6 +1,6 @@
 import { getCoinCategoriesData } from '@/services/coinGecko/coinCategories';
 import CategoryTable from './categoryTable';
-
+export const revalidate = 60;
 const page = async () => {
   try {
     const data = await getCoinCategoriesData();

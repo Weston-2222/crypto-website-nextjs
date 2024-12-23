@@ -3,6 +3,7 @@ import CoinMasketsCapTable from '@/components/coinMasketsCapTable';
 import { getCoinMarketsData } from '@/services/coinGecko/coinMarkets';
 import { CoinsMarketsApiResponse } from '@/types/api/coingecko/coinsMarkets';
 import { getCoinCategoryList } from '@/services/coinGecko/categoriesList';
+export const revalidate = 86400;
 const page = async ({ params }: { params: Promise<{ category: string }> }) => {
   const { category } = await params;
   try {

@@ -7,11 +7,14 @@ import {
 import { formatNumberWithCommas } from '@/lib/utils';
 import MyFavoriteCoinButton from './myFavoriteCoinButton';
 import { getCoinMarketsData } from '@/services/coinGecko/coinMarkets';
+import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions';
+import { getServerSession } from 'next-auth';
 
 const coinTitle = async ({ id }: { id: string }) => {
   const [data]: CoinsMarketsApiResponse[] = await getCoinMarketsData({
     ids: [id],
   });
+  const sesstion = await getServerSession(authOptions);
 
   if (!data) {
     return <div>無資料</div>;
@@ -25,7 +28,7 @@ const coinTitle = async ({ id }: { id: string }) => {
         {/* Name and Symbol */}
         <h1 className='text-4xl font-bold'>{data.name}</h1>
         <p className='text-xl text-gray-500'>{data.symbol}</p>
-        <MyFavoriteCoinButton coin_id={id} />
+        {sesstion && <MyFavoriteCoinButton coin_id={id} />}
       </div>
       {/* 第二行 */}
       <div className='flex items-center gap-2 m-2'>

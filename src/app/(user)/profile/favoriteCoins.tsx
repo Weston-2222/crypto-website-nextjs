@@ -32,19 +32,21 @@ const FavoriteCoins = async () => {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>收藏的幣種</CardTitle>
-        <CardDescription>收藏的幣種</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Reload />
-        {data ? <CoinMasketsCapTable data={data} /> : <p>沒有收藏任何幣種</p>}
-      </CardContent>
-      {/* <CardFooter>
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle>收藏的幣種</CardTitle>
+          <CardDescription></CardDescription>
+        </CardHeader>
+        <CardContent className='p-0'>
+          <Reload />
+          {data ? <CoinMasketsCapTable data={data} /> : <p>沒有收藏任何幣種</p>}
+        </CardContent>
+        {/* <CardFooter>
     <p></p>
   </CardFooter> */}
-    </Card>
+      </Card>
+    </>
   );
 };
 
