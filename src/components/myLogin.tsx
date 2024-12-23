@@ -15,8 +15,10 @@ import {
 } from './ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const MyLogin = () => {
+  const router = useRouter();
   const FormSchema = z.object({
     email: z.string().email({
       message: 'Invalid email address.',
@@ -42,9 +44,11 @@ const MyLogin = () => {
       password,
       callbackUrl: '/',
     });
-
     if (result?.error) {
       alert('登入失敗，請檢查您的電子郵件和密碼。');
+    }
+    if (result?.ok) {
+      router.push('/');
     }
   };
 
