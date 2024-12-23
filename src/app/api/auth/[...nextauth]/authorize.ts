@@ -12,7 +12,7 @@ export const authorize = async (
 
   // 查詢用戶
   const user = await User.findOne({ email: credentials?.email });
-  if (!user) throw new Error('404|用戶不存在');
+  if (!user) throw new Error('401|用戶不存在');
   // 驗證密碼
   const isValid = await bcrypt.compare(
     credentials?.password || '',
