@@ -8,7 +8,7 @@ import LinkInfo from './components/linkInfo';
 import DeveloperInfo from './components/developerInfo';
 import CategoryInfo from './components/categoryInfo';
 import PriceChart from './components/priceChart';
-
+export const revalidate = 60;
 const CoinPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
 
