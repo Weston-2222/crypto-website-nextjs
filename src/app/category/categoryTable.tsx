@@ -22,7 +22,7 @@ const categoryTableConfig: ColumnDef<CoinCategoriesApiResponse>[] = [
       const urls = info.getValue() as string[];
 
       return (
-        <div className='flex flex-row gap-2'>
+        <div className='flex flex-row lg:gap-2'>
           {urls.map((url) => {
             try {
               new URL(url);
