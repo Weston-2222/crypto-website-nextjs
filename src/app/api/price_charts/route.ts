@@ -12,22 +12,34 @@ export const GET = async (request: Request) => {
   const id = searchParams.get('coinId');
   const days = searchParams.get('days');
 
+  // 檢查參數
   if (!id || !days) {
     return NextResponse.json(
       { message: 'Missing parameters' },
       { status: 400 }
     );
   }
-  const dayValue = Days[days as keyof typeof Days];
 
-  if (!dayValue) {
+  // 檢查天數參數是否有效
+  if (!Object.keys(Days).includes(days)) {
     return NextResponse.json(
       { message: 'Invalid days parameter' },
       { status: 400 }
     );
   }
 
+  const dayValue = Days[days as keyof typeof Days];
+
+  // 檢查環境變數
+  if (!process.env.COINGECKO_API_URL || !process.env.COINGECKO_API_KEY) {
+    return NextResponse.json(
+      { message: 'Missing API configuration' },
+      { status: 500 }
+    );
+  }
+
   try {
+    // 呼叫外部 API
     const response = await fetch(
       `${process.env.COINGECKO_API_URL}/coins/${id}/market_chart?vs_currency=usd&days=${dayValue}`,
       {
@@ -39,22 +51,29 @@ export const GET = async (request: Request) => {
       }
     );
 
+    // 檢查 API 回應狀態
     if (!response.ok) {
-      throw new Error('Failed to fetch data');
+      const errorData = await response.json();
+      return NextResponse.json(
+        { message: 'Failed to fetch data', details: errorData },
+        { status: response.status }
+      );
     }
 
+    // 處理回應數據
     const data = await response.json();
 
     return NextResponse.json(data, {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'max-age=60',
+        'Cache-Control': 'public, max-age=60, stale-while-revalidate=30',
       },
     });
-  } catch {
+  } catch (error) {
+    // 捕捉伺服器錯誤
     return NextResponse.json(
-      { message: 'Internal Server Error' },
+      { message: 'Internal Server Error', error: (error as Error).message },
       { status: 500 }
     );
   }
