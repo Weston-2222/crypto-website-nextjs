@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# **加密貨幣資訊網站**
 
-## Getting Started
+一個使用 Next.js 開發的加密貨幣資訊網站，結合 Tailwind CSS 進行樣式設計，並使用 Redis 和 MongoDB 提供高效的數據存儲與緩存功能。
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## **功能介紹**
+
+- **加密貨幣即時數據查詢**：提供即時的加密貨幣市場價格與數據。
+- **用戶管理與認證**：支援註冊、登入。
+- **收藏與組合管理**：用戶可將喜愛的加密貨幣加入收藏。
+- **高效數據緩存**：使用 Redis 快速緩存 API 數據以提升響應速度。
+
+---
+
+## **技術棧**
+
+- **框架**：Next.js
+- **樣式**：Tailwind CSS
+- **數據庫**：MongoDB
+- **緩存**：Redis
+- **API 數據**：整合 CoinGecko API
+- **部署**：Vercel
+
+---
+
+## **專案結構**
+
+```plaintext
+|—app               路由與頁面
+|—components/       通用元件
+|—dynamic/          動態元件
+|—hooks/            自定義 hooks
+|—lib/              資料庫與 Redis 的連接配置
+|—models/           資料庫設置
+|—services/         第三方API函數
+|—types/            資料類型
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
