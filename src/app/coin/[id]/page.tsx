@@ -1,7 +1,6 @@
 import 'server-only';
-import CoinTitle from '@/components/coinTitle';
+import CoinTitle from './components/coinTitle';
 import { Suspense } from 'react';
-import Mymotion from '../../../components/myLoadingMotion';
 import MarketInfo from './components/marketInfo';
 import Loading from '@/components/loading';
 import LinkInfo from './components/linkInfo';
@@ -17,11 +16,14 @@ const CoinPage = async ({ params }: { params: Promise<{ id: string }> }) => {
       <div className='w-full'>
         <div>
           <Suspense
-            fallback={<Loading loadingSize='w-20 h-20' className='h-[100px]' />}
+            fallback={
+              <Loading
+                loadingSize='w-20 h-20'
+                className='h-[100px] w-[400px]'
+              />
+            }
           >
-            <Mymotion>
-              <CoinTitle id={id} />
-            </Mymotion>
+            <CoinTitle id={id} />
           </Suspense>
         </div>
       </div>
@@ -31,18 +33,14 @@ const CoinPage = async ({ params }: { params: Promise<{ id: string }> }) => {
           <Suspense
             fallback={<Loading className='h-[600px]' loadingSize='w-20 h-20' />}
           >
-            <Mymotion>
-              <PriceChart id={id} />
-            </Mymotion>
+            <PriceChart id={id} />
           </Suspense>
 
           {/* 市場資料 */}
           <Suspense
             fallback={<Loading className='h-1/2' loadingSize='w-20 h-20' />}
           >
-            <Mymotion>
-              <CategoryInfo id={id} />
-            </Mymotion>
+            <CategoryInfo id={id} />
           </Suspense>
         </div>
 
@@ -52,27 +50,21 @@ const CoinPage = async ({ params }: { params: Promise<{ id: string }> }) => {
           <Suspense
             fallback={<Loading className='h-[500px]' loadingSize='w-20 h-20' />}
           >
-            <Mymotion>
-              <MarketInfo id={id} />
-            </Mymotion>
+            <MarketInfo id={id} />
           </Suspense>
 
           {/* 鏈接資料 */}
           <Suspense
             fallback={<Loading className='h-1/2' loadingSize='w-20 h-20' />}
           >
-            <Mymotion>
-              <LinkInfo id={id} />
-            </Mymotion>
+            <LinkInfo id={id} />
           </Suspense>
 
           {/* 開發者資料 */}
           <Suspense
             fallback={<Loading className='h-1/2' loadingSize='w-20 h-20' />}
           >
-            <Mymotion>
-              <DeveloperInfo id={id} />
-            </Mymotion>
+            <DeveloperInfo id={id} />
           </Suspense>
         </div>
       </div>

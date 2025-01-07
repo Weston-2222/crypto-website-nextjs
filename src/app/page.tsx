@@ -1,6 +1,6 @@
 import 'server-only';
 import React from 'react';
-import CoinMasketsCapTable from '../components/coinMasketsCapTable';
+import CoinMasketsCapTable from '@/components/coinMasketsCapTable';
 import { getCoinMarketsData } from '@/services/coinGecko/coinMarkets';
 
 export const revalidate = 60; // 每小時重新生成靜態頁面（3600 秒）
