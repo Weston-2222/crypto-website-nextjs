@@ -1,11 +1,18 @@
 // import redis from '@/lib/redis';
 import { CoinsMarketsApiResponse } from '@/types/api/coingecko/coinsMarkets';
 
-const fetchCoinMarketData = async (): Promise<CoinsMarketsApiResponse[]> => {
+const fetchCoinMarketData = async ({
+  category,
+}: {
+  category?: string;
+}): Promise<CoinsMarketsApiResponse[]> => {
   // 從 CoinGecko 獲取市場資料
   const url = new URL(`${process.env.COINGECKO_API_URL}/coins/markets`);
   url.searchParams.append('vs_currency', 'usd');
   url.searchParams.append('per_page', '30');
+  if (category) {
+    url.searchParams.append('category', category);
+  }
   const response = await fetch(url.toString(), {
     headers: {
       accept: 'application/json',
@@ -32,7 +39,7 @@ const fetchCoinMarketData = async (): Promise<CoinsMarketsApiResponse[]> => {
  */
 export const getCoinMarketsData = async (
   params: {
-    category?: string | null;
+    category?: string;
     ids?: string[] | null;
   } = {}
 ): Promise<CoinsMarketsApiResponse[]> => {
@@ -57,7 +64,7 @@ export const getCoinMarketsData = async (
   // }
   // 如果 Redis 緩存沒有數據，從 CoinGecko API 獲取
   try {
-    const data = await fetchCoinMarketData();
+    const data = await fetchCoinMarketData({ category });
     // 將數據存入 Redis
     // try {
     //   await redis.set(
