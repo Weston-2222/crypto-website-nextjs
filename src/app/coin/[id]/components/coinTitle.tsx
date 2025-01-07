@@ -5,7 +5,7 @@ import {
   IconArrowBadgeDownFilled,
 } from '@tabler/icons-react';
 import { formatNumberWithCommas } from '@/lib/utils';
-import MyFavoriteCoinButton from './myFavoriteCoinButton';
+import MyFavoriteCoinButton from '../../../../components/myFavoriteCoinButton';
 import { getCoinMarketsData } from '@/services/coinGecko/coinMarkets';
 import { authOptions } from '@/app/api/auth/[...nextauth]/authOptions';
 import { getServerSession } from 'next-auth';

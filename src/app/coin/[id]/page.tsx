@@ -1,5 +1,5 @@
 import 'server-only';
-import CoinTitle from '@/components/coinTitle';
+import CoinTitle from './components/coinTitle';
 import { Suspense } from 'react';
 import MarketInfo from './components/marketInfo';
 import Loading from '@/components/loading';
