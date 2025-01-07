@@ -1,120 +1,161 @@
 'use client';
-import 'client-only';
-import { signIn } from 'next-auth/react';
+
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { toast } from '@/hooks/use-toast';
 
+import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-const FormSchema = z.object({
-  email: z.string().email({ message: 'Invalid email address.' }),
-  password: z
-    .string()
-    .min(8, { message: 'Password must be at least 8 characters.' }),
-});
+// 1. 透過 .refine() 驗證兩次輸入的密碼是否一致
+const FormSchema = z
+  .object({
+    email: z.string().email({ message: 'Email is not valid' }),
+    password: z.string().min(8, { message: '密碼至少8個字' }),
+    confirmPassword: z.string().min(8, { message: '確認密碼至少8個字' }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ['confirmPassword'],
+    message: '密碼不一致',
+  });
 
 export default function Page() {
   const router = useRouter();
+  const { toast } = useToast();
+
+  // 2. 依照不同 http status 回應不同訊息
+  const httpStatusToMessage = (status: number) => {
+    switch (status) {
+      case 201:
+        toast({ title: '註冊成功', description: '請登入' });
+        break;
+      case 400:
+        toast({
+          title: '註冊失敗',
+          description: 'Email 或 Password 格式錯誤，請重新註冊',
+        });
+        break;
+      case 409:
+        toast({ title: '註冊失敗', description: '該 Email 已被註冊' });
+        break;
+      default:
+        toast({ title: '註冊失敗', description: '伺服器錯誤' });
+        break;
+    }
+  };
+
+  // 3. 設定表單初始值並綁定 Zod 驗證
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: { email: '', password: '' },
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   });
 
+  // 4. 提交表單後請求後端 API，並依回應處理對應邏輯
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    const result = await signIn('credentials', {
-      redirect: false,
-      callbackUrl: '/',
-      ...data,
+    const response = await fetch('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
     });
 
-    if (result?.error) {
-      const [code] = result.error.split('|');
-      const status = parseInt(code);
+    httpStatusToMessage(response.status);
 
-      switch (status) {
-        case 400:
-          alert('登入參數未提供');
-          break;
-        case 401:
-          alert('email或密碼錯誤');
-          break;
-        case 404:
-          alert('用戶不存在');
-          break;
-        default:
-          alert('伺服器錯誤');
-      }
-      return;
-    }
-
-    if (result?.ok) {
-      router.push('/');
-      toast({ title: '登入成功' });
+    if (response.status === 201) {
+      router.push('/login');
     }
   };
 
   return (
-    <div className='flex flex-col items-center justify-center py-6 sm:py-12'>
-      <div className='w-full max-w-md px-8 py-6 shadow-lg rounded-lg'>
-        <h1 className='text-2xl font-bold text-center mb-6'>
-          歡迎光臨 Crypto Inflation Website
-        </h1>
+    <div className='flex min-h-screen items-center justify-center p-4'>
+      <div className='w-full max-w-md rounded-lg shadow-lg p-8'>
+        <h1 className='text-2xl font-bold text-center mb-6'>註冊</h1>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+            {/* Email */}
             <FormField
               control={form.control}
               name='email'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>信箱</FormLabel>
                   <FormControl>
-                    <Input placeholder='example@gmail.com' {...field} />
+                    <Input
+                      {...field}
+                      placeholder='example@email.com'
+                      className='w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+            {/* Password */}
             <FormField
               control={form.control}
               name='password'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>密碼</FormLabel>
                   <FormControl>
-                    <Input type='password' placeholder='********' {...field} />
+                    <Input
+                      {...field}
+                      type='password'
+                      placeholder='********'
+                      className='w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Button type='submit' className='w-full'>
-              Submit
+            {/* Confirm Password */}
+            <FormField
+              control={form.control}
+              name='confirmPassword'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>確認密碼</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type='password'
+                      placeholder='********'
+                      className='w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    />
+                  </FormControl>
+                  {/* 提示文字直接由 Zod 驗證錯誤顯示 */}
+                  <FormDescription />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* 提交按鈕 */}
+            <Button
+              type='submit'
+              className='w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-all duration-300'
+            >
+              註冊
             </Button>
           </form>
         </Form>
-        <div className='flex justify-between mt-4'>
-          <Button variant='link' asChild>
-            <Link href='/register'>註冊</Link>
-          </Button>
-          <Button variant='link' asChild>
-            <Link href='/forgot-password'>忘記密碼</Link>
-          </Button>
-        </div>
       </div>
     </div>
   );
