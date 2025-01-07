@@ -13,12 +13,17 @@ const CoinPriceTabs = ({
   coinId: string;
   symbol: string;
 }) => {
-  const [type, setType] = useState<'price' | 'market_caps'>('price');
+  const [type, setType] = useState<'price' | 'market_caps' | 'TradingView'>(
+    'price'
+  );
   return (
     <Tabs
       defaultValue='prices'
       className='w-full'
-      onValueChange={(value) => setType(value as 'price' | 'market_caps')}
+      onValueChange={(value) => {
+        console.log(value);
+        setType(value as 'price' | 'market_caps' | 'TradingView');
+      }}
     >
       <TabsList>
         <TabsTrigger value='price' className='hover:text-primary'>
@@ -32,17 +37,13 @@ const CoinPriceTabs = ({
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value='TradingView' className='h-full w-full'>
+      <TabsContent value='TradingView' className='h-[600px] w-full'>
         <TradingViewWidget symbol={symbol} />
       </TabsContent>
 
-      {/* <TabsContent value={type} className='h-full w-full'> */}
-      <MyPricesCharts coinId={coinId} type={type} />
-      {/* </TabsContent> */}
-      {/* 
-      <TabsContent value='market_caps' className='h-full w-full'>
-        <p>Change your password here.</p>
-      </TabsContent> */}
+      {type === 'TradingView' ? null : (
+        <MyPricesCharts coinId={coinId} type={type} />
+      )}
     </Tabs>
   );
 };
