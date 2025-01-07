@@ -5,6 +5,7 @@ const fetchCoinMarketData = async (): Promise<CoinsMarketsApiResponse[]> => {
   // 從 CoinGecko 獲取市場資料
   const url = new URL(`${process.env.COINGECKO_API_URL}/coins/markets`);
   url.searchParams.append('vs_currency', 'usd');
+  url.searchParams.append('per_page', '30');
   const response = await fetch(url.toString(), {
     headers: {
       accept: 'application/json',
