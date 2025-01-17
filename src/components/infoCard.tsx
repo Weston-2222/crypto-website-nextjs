@@ -30,28 +30,32 @@ const InfoCard = ({ config }: { config: InfoCardConfig }) => {
         <CardDescription>{config.description}</CardDescription>
       </CardHeader>
 
-      {config.content.map(
-        (item) =>
-          item.value && (
-            <div
-              key={item.label}
-              className='flex justify-between border-b border-balck-700'
-            >
-              <CardContent className='flex items-center space-x-2 p-6'>
-                <div>{item.label}</div>
+      {config.title !== '分類' ? (
+        config.content.map(
+          (item) =>
+            item.value && (
+              <div
+                key={item.label}
+                className='flex justify-between border-b border-balck-700'
+              >
+                <CardContent className='flex items-center space-x-2 p-6'>
+                  <div>{item.label}</div>
 
-                {item.tooltip && (
-                  <HoverCard openDelay={0} closeDelay={0}>
-                    <HoverCardTrigger>
-                      <IconInfoHexagon className='h-4 w-4' />
-                    </HoverCardTrigger>
-                    <HoverCardContent>{item.tooltip}</HoverCardContent>
-                  </HoverCard>
-                )}
-              </CardContent>
-              <div className='p-4'>{item.value}</div>
-            </div>
-          )
+                  {item.tooltip && (
+                    <HoverCard openDelay={0} closeDelay={0}>
+                      <HoverCardTrigger>
+                        <IconInfoHexagon className='h-4 w-4' />
+                      </HoverCardTrigger>
+                      <HoverCardContent>{item.tooltip}</HoverCardContent>
+                    </HoverCard>
+                  )}
+                </CardContent>
+                <div className='p-4'>{item.value}</div>
+              </div>
+            )
+        )
+      ) : (
+        <div className='p-4'>{config.content[0].value}</div>
       )}
       {/* <CardFooter>
         <p>Card Footer</p>

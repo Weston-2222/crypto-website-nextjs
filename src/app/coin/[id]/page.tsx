@@ -21,7 +21,7 @@ const CoinPage = async ({ params }: { params: Promise<{ id: string }> }) => {
         <div className='xl:order-2 w-full xl:w-2/3'>
           <PriceChart id={id} />
 
-          {/* 市場資料 */}
+          {/* 分類資料 */}
           <CategoryInfo id={id} />
         </div>
 

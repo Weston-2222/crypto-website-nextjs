@@ -31,7 +31,7 @@ const coinTitle = async ({ id }: { id: string }) => {
         {sesstion && <MyFavoriteCoinButton coin_id={id} />}
       </div>
       {/* 第二行 */}
-      <div className='flex items-center gap-2 m-2'>
+      <div className='flex items-center gap-2 m-2 flex-wrap'>
         {/* Price */}
         <p className='text-4xl font-bold'>
           USD${formatNumberWithCommas(data.current_price)}
