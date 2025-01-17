@@ -75,13 +75,13 @@ export default function MyTable<T>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
-                className='cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800'
+                className='cursor-pointer lg:hover:bg-gray-200 lg:dark:hover:bg-gray-800'
+                onClick={() => onRowClick?.(row.original)}
               >
                 {row.getVisibleCells().map((cell, index) => (
                   <TableCell
                     key={cell.id}
                     className={getStickyClassName(false, index === 0)}
-                    onClick={() => onRowClick?.(row.original)}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>

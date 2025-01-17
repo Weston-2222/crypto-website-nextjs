@@ -11,7 +11,6 @@ const CategoryInfo = async ({ id }: { id: string }) => {
     const categoryInfoConfig: InfoCardConfig = await getCategoryInfoConfig(
       coinData
     );
-
     return <InfoCard config={categoryInfoConfig} />;
   } catch {
     return <p>無法取得分類資料</p>;
