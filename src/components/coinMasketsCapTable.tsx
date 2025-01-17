@@ -24,10 +24,13 @@ export const CoinMasketsCapTable = ({
 
     const [name, symbol] = name_symbol.split('_');
     const symbolUpper = symbol.toUpperCase();
-    const backgroundColor =
-      'dark:bg-black bg-gray-100 lg:bg-transparent lg:dark:bg-transparent';
+    const backgroundColor = '';
     return (
-      <div className={cn('flex items-center')}>
+      <div
+        className={cn(
+          'flex items-center bg-gray-100 dark:bg-gray-800 md:bg-transparent md:dark:bg-transparent'
+        )}
+      >
         <span className={cn('p-4', backgroundColor)}>
           {info.row.original.market_cap_rank}
         </span>
